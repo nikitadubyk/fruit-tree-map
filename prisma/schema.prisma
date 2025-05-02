@@ -1,0 +1,18 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tree {
+  id        Int      @id @default(autoincrement())
+  latitude  Float
+  longitude Float
+  species   String
+  note      String?
+  createdAt DateTime @default(now())
+}
