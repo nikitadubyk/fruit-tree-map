@@ -1,48 +1,110 @@
 'use client';
 
-import dynamic from 'next/dynamic';
-import 'leaflet/dist/leaflet.css';
+import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
+import {
+  Marker,
+  GoogleMap,
+  Autocomplete,
+  useJsApiLoader,
+} from '@react-google-maps/api';
 
 import { Tree } from '@/app/generated/prisma';
 
-const MapContainer = dynamic(
-  () => import('react-leaflet').then((mod) => mod.MapContainer),
-  { ssr: false }
-);
-const TileLayer = dynamic(
-  () => import('react-leaflet').then((mod) => mod.TileLayer),
-  { ssr: false }
-);
-const Marker = dynamic(
-  () => import('react-leaflet').then((mod) => mod.Marker),
-  { ssr: false }
-);
-const Popup = dynamic(() => import('react-leaflet').then((mod) => mod.Popup), {
-  ssr: false,
-});
+import { Input } from './ui/input';
 
-interface Props {
-  trees: Tree[];
+interface TreeMapProps {
+  zoom?: number;
+  trees?: Tree[];
+  center?: { lat: number; lng: number };
 }
 
-export function TreeMap({ trees }: Props) {
+export function TreeMap({
+  zoom = 10,
+  trees = [],
+  center = { lat: 55.751244, lng: 37.618423 },
+}: TreeMapProps) {
+  const { isLoaded, loadError } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!,
+    libraries: ['places'],
+  });
+
+  const [mapCenter, setMapCenter] = useState(center);
+
+  const autoCompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+
+  const options = useMemo<google.maps.MapOptions>(
+    () => ({
+      zoomControl: true,
+      disableDefaultUI: true,
+    }),
+    []
+  );
+
+  const onLoadAutocomplete = useCallback(
+    (autocomplete: google.maps.places.Autocomplete) => {
+      autoCompleteRef.current = autocomplete;
+    },
+    []
+  );
+
+  const onPlaceChanged = useCallback(() => {
+    const place = autoCompleteRef.current?.getPlace();
+    if (place?.geometry?.location) {
+      const lat = place.geometry.location.lat();
+      const lng = place.geometry.location.lng();
+      setMapCenter({ lat, lng });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!('geolocation' in navigator)) return;
+
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        setMapCenter({
+          lat: coords.latitude,
+          lng: coords.longitude,
+        });
+      },
+      (err) => {
+        console.warn('Не удалось получить геолокацию:', err);
+      }
+    );
+  }, []);
+
+  if (loadError) {
+    return <p className="text-red-500">Ошибка загрузки карты</p>;
+  }
+  if (!isLoaded) {
+    return <p>Загрузка карты…</p>;
+  }
+
   return (
-    <MapContainer
-      zoom={13}
-      center={[51.505, -0.09]}
-      className="h-[100vh] w-[100vw] justify-self-center px-10 m-0 z-0"
-    >
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      {trees.map((t) => (
-        <Marker key={t.id} position={[t.latitude, t.longitude]}>
-          <Popup>
-            <div className="p-2">
-              <h3 className="font-bold">{t.species}</h3>
-              {t.note && <p className="text-sm">{t.note}</p>}
-            </div>
-          </Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+    <div className="relative w-full h-screen">
+      <div className="absolute top-4 left-4 transform z-10 w-80">
+        <Autocomplete
+          onLoad={onLoadAutocomplete}
+          onPlaceChanged={onPlaceChanged}
+        >
+          <Input placeholder="Поиск города" className="bg-white" />
+        </Autocomplete>
+      </div>
+
+      <GoogleMap
+        zoom={zoom}
+        options={options}
+        center={mapCenter}
+        mapContainerClassName="w-full h-full"
+      >
+        {trees.map((tree) => (
+          <Marker
+            key={tree.id}
+            title={tree.species}
+            position={{ lat: tree.latitude, lng: tree.longitude }}
+          />
+        ))}
+      </GoogleMap>
+    </div>
   );
 }
