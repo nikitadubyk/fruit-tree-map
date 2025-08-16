@@ -126,6 +126,15 @@ exports.Prisma.TreeScalarFieldEnum = {
   longitude: 'longitude',
   species: 'species',
   note: 'note',
+  createdAt: 'createdAt',
+  userId: 'userId'
+};
+
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  githubId: 'githubId',
+  name: 'name',
+  email: 'email',
   createdAt: 'createdAt'
 };
 
@@ -146,7 +155,8 @@ exports.Prisma.NullsOrder = {
 
 
 exports.Prisma.ModelName = {
-  Tree: 'Tree'
+  Tree: 'Tree',
+  User: 'User'
 };
 
 /**

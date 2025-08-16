@@ -15,4 +15,17 @@ model Tree {
   species   String
   note      String?
   createdAt DateTime @default(now())
+
+  User   User? @relation(fields: [userId], references: [id])
+  userId Int?
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  githubId  String   @unique
+  name      String?
+  email     String?  @unique
+  createdAt DateTime @default(now())
+
+  trees Tree[]
 }

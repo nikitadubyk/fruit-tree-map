@@ -1,16 +1,11 @@
 'use client';
 
-import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
-import {
-  Marker,
-  GoogleMap,
-  Autocomplete,
-  useJsApiLoader,
-} from '@react-google-maps/api';
+import { useState, useMemo, useEffect } from 'react';
+import { Marker, GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 
 import { Tree } from '@/app/generated/prisma';
 
-import { Input } from './ui/input';
+import { Header } from './header';
 
 interface TreeMapProps {
   zoom?: number;
@@ -18,20 +13,18 @@ interface TreeMapProps {
   center?: { lat: number; lng: number };
 }
 
-export function TreeMap({
-  zoom = 10,
+export const TreeMap = ({
+  zoom = 12,
   trees = [],
-  center = { lat: 55.751244, lng: 37.618423 },
-}: TreeMapProps) {
+  center = { lat: 48.3071, lng: 38.029633 },
+}: TreeMapProps) => {
   const { isLoaded, loadError } = useJsApiLoader({
+    libraries: ['places'],
     id: 'google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!,
-    libraries: ['places'],
   });
 
   const [mapCenter, setMapCenter] = useState(center);
-
-  const autoCompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
   const options = useMemo<google.maps.MapOptions>(
     () => ({
@@ -40,22 +33,6 @@ export function TreeMap({
     }),
     []
   );
-
-  const onLoadAutocomplete = useCallback(
-    (autocomplete: google.maps.places.Autocomplete) => {
-      autoCompleteRef.current = autocomplete;
-    },
-    []
-  );
-
-  const onPlaceChanged = useCallback(() => {
-    const place = autoCompleteRef.current?.getPlace();
-    if (place?.geometry?.location) {
-      const lat = place.geometry.location.lat();
-      const lng = place.geometry.location.lng();
-      setMapCenter({ lat, lng });
-    }
-  }, []);
 
   useEffect(() => {
     if (!('geolocation' in navigator)) return;
@@ -82,14 +59,7 @@ export function TreeMap({
 
   return (
     <div className="relative w-full h-screen">
-      <div className="absolute top-4 left-4 transform z-10 w-80">
-        <Autocomplete
-          onLoad={onLoadAutocomplete}
-          onPlaceChanged={onPlaceChanged}
-        >
-          <Input placeholder="Поиск города" className="bg-white" />
-        </Autocomplete>
-      </div>
+      <Header setMapCenter={setMapCenter} />
 
       <GoogleMap
         zoom={zoom}
@@ -107,4 +77,4 @@ export function TreeMap({
       </GoogleMap>
     </div>
   );
-}
+};
