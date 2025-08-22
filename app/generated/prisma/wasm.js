@@ -132,10 +132,18 @@ exports.Prisma.TreeScalarFieldEnum = {
 
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
-  githubId: 'githubId',
   name: 'name',
   email: 'email',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.MagicLinkTokenScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  email: 'email',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  used: 'used'
 };
 
 exports.Prisma.SortOrder = {
@@ -156,7 +164,8 @@ exports.Prisma.NullsOrder = {
 
 exports.Prisma.ModelName = {
   Tree: 'Tree',
-  User: 'User'
+  User: 'User',
+  MagicLinkToken: 'MagicLinkToken'
 };
 
 /**

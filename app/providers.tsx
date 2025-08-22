@@ -1,11 +1,12 @@
 'use client';
 
 import { Theme } from '@radix-ui/themes';
+import { Toaster } from 'react-hot-toast';
 import { PropsWithChildren } from 'react';
-import { SessionProvider } from 'next-auth/react';
 
 export const Providers = ({ children }: PropsWithChildren) => (
-  <SessionProvider>
-    <Theme>{children}</Theme>
-  </SessionProvider>
+  <Theme>
+    {children}
+    <Toaster position="top-right" />
+  </Theme>
 );

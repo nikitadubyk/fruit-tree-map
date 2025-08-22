@@ -2,7 +2,7 @@
 
 import { Button, TextField } from '@radix-ui/themes';
 import { Autocomplete } from '@react-google-maps/api';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import Link from 'next/link';
 import { Dispatch, SetStateAction, useRef, useCallback } from 'react';
 
 interface HeaderProps {
@@ -10,10 +10,7 @@ interface HeaderProps {
 }
 
 export const Header = ({ setMapCenter }: HeaderProps) => {
-  const { data: session } = useSession();
   const autoCompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
-
-  console.log('session', session);
 
   const onLoadAutocomplete = useCallback(
     (autocomplete: google.maps.places.Autocomplete) => {
@@ -47,15 +44,9 @@ export const Header = ({ setMapCenter }: HeaderProps) => {
       </div>
 
       <div className="flex gap-4 flex-shrink-0">
-        {session?.user ? (
-          <Button size="3" onClick={() => signOut()}>
-            Logout
-          </Button>
-        ) : (
-          <Button size="3" onClick={() => signIn('github')}>
-            Login
-          </Button>
-        )}
+        <Button size="3">
+          <Link href="/login">Войти</Link>
+        </Button>
       </div>
     </div>
   );
