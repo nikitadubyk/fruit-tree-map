@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 
+import { useUserStore } from '@/store';
 import { ROUTES, URL } from '@/config';
 import { saveTokens, saveUser } from '@/utils';
 
@@ -26,6 +27,7 @@ interface AuthResponse {
 export default function MagicLinkPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const updateUser = useUserStore((state) => state.updateUser);
   const router = useRouter();
 
   const searchParams = useSearchParams();
@@ -44,6 +46,7 @@ export default function MagicLinkPage() {
 
       saveUser(user);
       saveTokens(tokens);
+      updateUser(user);
 
       router.push(ROUTES.HOME);
     } catch (err) {

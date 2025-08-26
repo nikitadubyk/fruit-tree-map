@@ -1,15 +1,21 @@
 'use client';
 
-import { Button, TextField } from '@radix-ui/themes';
-import { Autocomplete } from '@react-google-maps/api';
 import Link from 'next/link';
+import { Autocomplete } from '@react-google-maps/api';
+import { AvatarIcon, PersonIcon } from '@radix-ui/react-icons';
+import { Button, TextField, DropdownMenu } from '@radix-ui/themes';
 import { Dispatch, SetStateAction, useRef, useCallback } from 'react';
+
+import { ROUTES } from '@/config';
+import { useUserStore } from '@/store';
 
 interface HeaderProps {
   setMapCenter: Dispatch<SetStateAction<{ lat: number; lng: number }>>;
 }
 
 export const Header = ({ setMapCenter }: HeaderProps) => {
+  const user = useUserStore((state) => state.user);
+  const logOut = useUserStore((state) => state.logOut);
   const autoCompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
   const onLoadAutocomplete = useCallback(
@@ -38,15 +44,36 @@ export const Header = ({ setMapCenter }: HeaderProps) => {
           <TextField.Root
             size="3"
             className="bg-white w-full"
-            placeholder="Поиск города"
+            placeholder="Поиск города, улицы, дома"
           />
         </Autocomplete>
       </div>
 
       <div className="flex gap-4 flex-shrink-0">
-        <Button size="3">
-          <Link href="/login">Войти</Link>
-        </Button>
+        {user ? (
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger>
+              <Button size="3">
+                <AvatarIcon width={24} height={24} />
+              </Button>
+            </DropdownMenu.Trigger>
+
+            <DropdownMenu.Content>
+              <DropdownMenu.Item asChild>
+                <Link href={ROUTES.PROFILE.HOME}>Профиль</Link>
+              </DropdownMenu.Item>
+              <DropdownMenu.Separator />
+              <DropdownMenu.Item onClick={logOut} color="red">
+                Выйти
+              </DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu.Root>
+        ) : (
+          <Button size="3">
+            <PersonIcon />
+            <Link href="/login">Войти</Link>
+          </Button>
+        )}
       </div>
     </div>
   );

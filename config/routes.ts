@@ -3,7 +3,12 @@ const AUTH = {
   MAGIC_LINK: '/magic-link',
 };
 
+const PROFILE = {
+  HOME: '/profile',
+};
+
 export const ROUTES = {
   AUTH,
+  PROFILE,
   HOME: '/',
 };
