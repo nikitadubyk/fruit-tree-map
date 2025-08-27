@@ -5,7 +5,6 @@ const publicRoutes = ['/api/auth'];
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  console.log('pathname', pathname);
 
   if (publicRoutes.some((route) => pathname.startsWith(route))) {
     return NextResponse.next();
@@ -22,8 +21,17 @@ export async function middleware(req: NextRequest) {
   const token = authHeader.split(' ')[1];
 
   try {
-    await jwtVerify(token, new TextEncoder().encode(process.env.JWT_SECRET!));
-    return NextResponse.next();
+    const { payload } = await jwtVerify(
+      token,
+      new TextEncoder().encode(process.env.JWT_SECRET!)
+    );
+
+    const requestHeaders = new Headers(req.headers);
+
+    requestHeaders.set('x-user-id', payload.userId as string);
+    requestHeaders.set('x-user-email', payload.email as string);
+
+    return NextResponse.next({ request: { headers: requestHeaders } });
   } catch (error) {
     console.error(error);
     return NextResponse.json(

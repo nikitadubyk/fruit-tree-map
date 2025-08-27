@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import { api } from '@/api';
 import { User } from '@/types';
 import { MESSAGES, URL } from '@/config';
-import { clearAll, saveUser } from '@/utils';
+import { clearAll, handleErrorMessage, saveUser } from '@/utils';
 
 export interface UserState {
   user?: User;
@@ -31,8 +31,7 @@ export const useUserStore = create<UserState>((set) => ({
 
       return data;
     } catch (error) {
-      console.error(error);
-      toast.error(error as string);
+      toast.error(handleErrorMessage(error));
     }
   },
   logOut: () => {

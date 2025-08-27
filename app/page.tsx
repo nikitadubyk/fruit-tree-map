@@ -6,7 +6,7 @@ export default async function Home() {
 
   return (
     <div>
-      <TreeMap trees={trees} />
+      <TreeMap initialTrees={trees} />
     </div>
   );
 }
