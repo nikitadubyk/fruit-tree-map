@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Autocomplete } from '@react-google-maps/api';
 import { AvatarIcon, PersonIcon } from '@radix-ui/react-icons';
 import { Button, TextField, DropdownMenu } from '@radix-ui/themes';
@@ -14,6 +15,7 @@ interface HeaderProps {
 }
 
 export const Header = ({ setMapCenter }: HeaderProps) => {
+  const router = useRouter();
   const user = useUserStore((state) => state.user);
   const logOut = useUserStore((state) => state.logOut);
   const autoCompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
@@ -69,9 +71,9 @@ export const Header = ({ setMapCenter }: HeaderProps) => {
             </DropdownMenu.Content>
           </DropdownMenu.Root>
         ) : (
-          <Button size="3">
+          <Button size="3" onClick={() => router.push(ROUTES.AUTH.LOGIN)}>
             <PersonIcon />
-            <Link href="/login">Войти</Link>
+            Войти
           </Button>
         )}
       </div>

@@ -39,5 +39,7 @@ export async function POST(req: Request) {
     from: 'onboarding@resend.dev',
   });
 
+  console.log('response', response);
+
   return NextResponse.json(response);
 }

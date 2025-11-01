@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 
 import { api } from '@/api';
-import { Tree } from '@/app/generated/prisma';
 import { URL } from '@/config';
+import { Tree } from '@/app/generated/prisma';
 
 interface TreeState {
   trees: Tree[];

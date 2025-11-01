@@ -10,15 +10,11 @@ import { useTreeStore, useUserStore } from '@/store';
 
 import { Header } from '../header';
 import { AddTreeDialog } from '../add-tree-dialog';
+import { TreeDetailsDialog } from '../tree-details-dialog';
 
 import { MapError } from './error';
 import { MapLoader } from './loader';
-
-interface TreeMapProps {
-  zoom?: number;
-  center?: Coordinate;
-  initialTrees?: Tree[];
-}
+import { TreeMapProps } from './types';
 
 export const TreeMap = ({
   zoom = 12,
@@ -28,6 +24,8 @@ export const TreeMap = ({
   const { trees, setTrees } = useTreeStore();
   const [marker, setMarker] = useState<Coordinate>();
   const [mapCenter, setMapCenter] = useState(center);
+  const [selectedTree, setSelectedTree] = useState<Tree | null>(null);
+
   const isLoggedIn = useUserStore((state) => state.isLoggedIn);
 
   const { isLoaded, loadError } = useJsApiLoader({
@@ -44,6 +42,17 @@ export const TreeMap = ({
     }),
     []
   );
+
+  const treeIcon = useMemo<google.maps.Icon | undefined>(() => {
+    if (!isLoaded) return undefined;
+
+    return {
+      url: '/tree-marker.svg',
+      origin: new google.maps.Point(0, 0),
+      anchor: new google.maps.Point(20, 40),
+      scaledSize: new google.maps.Size(40, 40),
+    };
+  }, [isLoaded]);
 
   useEffect(() => {
     if (initialTrees.length > 0) {
@@ -98,7 +107,9 @@ export const TreeMap = ({
           {trees.map((tree) => (
             <Marker
               key={tree.id}
+              icon={treeIcon}
               title={tree.species}
+              onClick={() => setSelectedTree(tree)}
               position={{ lat: tree.latitude, lng: tree.longitude }}
             />
           ))}
@@ -110,6 +121,14 @@ export const TreeMap = ({
         open={!!marker}
         onOpenChange={(open) => {
           if (!open) setMarker(undefined);
+        }}
+      />
+
+      <TreeDetailsDialog
+        tree={selectedTree}
+        open={!!selectedTree}
+        onOpenChange={(open) => {
+          if (!open) setSelectedTree(null);
         }}
       />
     </>

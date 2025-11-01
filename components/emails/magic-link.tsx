@@ -93,26 +93,25 @@ export const MagicLinkEmail = ({
   </Html>
 );
 
-// Стили
 const main = {
   backgroundColor: '#f6f9fc',
   fontFamily: '"Inter", "Arial", sans-serif',
 };
 
 const container = {
-  backgroundColor: '#ffffff',
-  border: '1px solid #f0f0f0',
-  borderRadius: '8px',
-  margin: '40px auto',
   padding: '0',
   width: '600px',
   maxWidth: '100%',
+  borderRadius: '8px',
+  margin: '40px auto',
+  backgroundColor: '#ffffff',
+  border: '1px solid #f0f0f0',
 };
 
 const header = {
+  padding: '32px 40px',
   backgroundColor: '#4f46e5',
   borderRadius: '8px 8px 0 0',
-  padding: '32px 40px',
 };
 
 const logoContainer = {
@@ -127,10 +126,10 @@ const logoPlaceholder = {
 };
 
 const logoText = {
+  margin: '0',
   color: '#ffffff',
   fontSize: '24px',
   fontWeight: '600',
-  margin: '0',
 };
 
 const content = {
@@ -154,22 +153,22 @@ const paragraph = {
 };
 
 const buttonContainer = {
-  textAlign: 'center' as const,
   margin: '32px 0',
+  textAlign: 'center' as const,
 };
 
 const button = {
-  backgroundColor: '#4f46e5',
-  borderRadius: '6px',
+  border: 'none',
   color: '#ffffff',
   fontSize: '16px',
   fontWeight: '600',
-  textDecoration: 'none',
-  textAlign: 'center' as const,
-  display: 'inline-block',
-  padding: '14px 32px',
-  border: 'none',
   cursor: 'pointer',
+  borderRadius: '6px',
+  padding: '14px 32px',
+  textDecoration: 'none',
+  display: 'inline-block',
+  backgroundColor: '#4f46e5',
+  textAlign: 'center' as const,
   boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
 };
 
@@ -183,23 +182,23 @@ const alternativeText = {
 const linkStyle = {
   color: '#4f46e5',
   fontSize: '14px',
-  textDecoration: 'underline',
-  wordBreak: 'break-all' as const,
   display: 'block',
-  textAlign: 'center' as const,
   margin: '0 0 24px 0',
+  textDecoration: 'underline',
+  textAlign: 'center' as const,
+  wordBreak: 'break-all' as const,
 };
 
 const hr = {
-  borderColor: '#e5e7eb',
   margin: '24px 0',
+  borderColor: '#e5e7eb',
 };
 
 const footer = {
+  margin: '8px 0',
   color: '#6b7280',
   fontSize: '14px',
   lineHeight: '1.5',
-  margin: '8px 0',
   textAlign: 'center' as const,
 };
 
@@ -216,9 +215,9 @@ const footerText = {
 };
 
 const disclaimerText = {
+  margin: '0',
   color: '#9ca3af',
   fontSize: '12px',
   lineHeight: '1.4',
-  margin: '0',
   textAlign: 'center' as const,
 };
