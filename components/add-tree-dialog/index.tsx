@@ -8,6 +8,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { X, MapPin, Trees, FileText, Loader2 } from 'lucide-react';
 
 import { api } from '@/api';
+import { useTreeStore } from '@/store';
 import { MESSAGES, URL } from '@/config';
 import { handleErrorMessage, getAddressFromCoordinates } from '@/utils';
 
@@ -22,6 +23,7 @@ export const AddTreeDialog = ({
   onOpenChange,
 }: AddTreeDialogProps) => {
   const [address, setAddress] = useState('');
+  const addTree = useTreeStore((state) => state.addTree);
   const [loadingAddress, setLoadingAddress] = useState(false);
 
   const form = useForm<FormValues>({
@@ -58,6 +60,7 @@ export const AddTreeDialog = ({
       });
 
       if (data?.id) {
+        addTree(data);
         toast.success(`Дерево ${MESSAGES.SUCCESS_ADDED}`);
         onOpenChange(false);
         form.reset();

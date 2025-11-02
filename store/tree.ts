@@ -8,6 +8,7 @@ interface TreeState {
   trees: Tree[];
   addTree: (tree: Tree) => void;
   getTrees: () => Promise<Tree[]>;
+  deleteTree: (id: number) => void;
   updateTree: (tree: Tree) => void;
   setTrees: (trees: Tree[]) => void;
 }
@@ -19,6 +20,10 @@ export const useTreeStore = create<TreeState>((set) => ({
   updateTree: (tree) =>
     set((state) => ({
       trees: state.trees.map((t) => (t.id === tree.id ? tree : t)),
+    })),
+  deleteTree: (id) =>
+    set((state) => ({
+      trees: state.trees.filter((t) => t.id !== id),
     })),
   getTrees: async () => {
     const trees = await api.get<void, Tree[]>(URL.GET_TREES);

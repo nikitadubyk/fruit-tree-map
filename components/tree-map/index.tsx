@@ -1,8 +1,8 @@
 'use client';
 
 import toast from 'react-hot-toast';
-import { useState, useMemo, useEffect } from 'react';
-import { Marker, GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import { useState, useMemo, useEffect, useCallback } from 'react';
+import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 
 import { Coordinate } from '@/types';
 import { Tree } from '@/app/generated/prisma';
@@ -15,6 +15,7 @@ import { TreeDetailsDialog } from '../tree-details-dialog';
 import { MapError } from './error';
 import { MapLoader } from './loader';
 import { TreeMapProps } from './types';
+import { useGeolocation, useMarkerClusterer } from './hooks';
 
 export const TreeMap = ({
   zoom = 12,
@@ -24,14 +25,15 @@ export const TreeMap = ({
   const { trees, setTrees } = useTreeStore();
   const [marker, setMarker] = useState<Coordinate>();
   const [mapCenter, setMapCenter] = useState(center);
+  const [map, setMap] = useState<google.maps.Map | null>(null);
   const [selectedTree, setSelectedTree] = useState<Tree | null>(null);
 
   const isLoggedIn = useUserStore((state) => state.isLoggedIn);
 
   const { isLoaded, loadError } = useJsApiLoader({
     language: 'ru',
-    libraries: ['places'],
     id: 'google-map-script',
+    libraries: ['places', 'marker'],
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!,
   });
 
@@ -39,20 +41,10 @@ export const TreeMap = ({
     () => ({
       zoomControl: true,
       disableDefaultUI: true,
+      mapId: process.env.NEXT_PUBLIC_GOOGLE_MAP_ID || 'DEMO_MAP_ID',
     }),
     []
   );
-
-  const treeIcon = useMemo<google.maps.Icon | undefined>(() => {
-    if (!isLoaded) return undefined;
-
-    return {
-      url: '/tree-marker.svg',
-      origin: new google.maps.Point(0, 0),
-      anchor: new google.maps.Point(20, 40),
-      scaledSize: new google.maps.Size(40, 40),
-    };
-  }, [isLoaded]);
 
   useEffect(() => {
     if (initialTrees.length > 0) {
@@ -60,21 +52,9 @@ export const TreeMap = ({
     }
   }, [initialTrees, setTrees]);
 
-  useEffect(() => {
-    if (!('geolocation' in navigator)) return;
+  useGeolocation({ setMapCenter });
 
-    navigator.geolocation.getCurrentPosition(
-      ({ coords }) => {
-        setMapCenter({
-          lat: coords.latitude,
-          lng: coords.longitude,
-        });
-      },
-      (err) => {
-        console.warn('Не удалось получить геолокацию:', err);
-      }
-    );
-  }, []);
+  useMarkerClusterer({ map, trees, isLoaded, setSelectedTree });
 
   const onMapClick = (e: google.maps.MapMouseEvent) => {
     if (!isLoggedIn || !e.latLng) {
@@ -83,6 +63,14 @@ export const TreeMap = ({
 
     setMarker({ lat: e.latLng.lat(), lng: e.latLng.lng() });
   };
+
+  const onLoad = useCallback((map: google.maps.Map) => {
+    setMap(map);
+  }, []);
+
+  const onUnmount = useCallback(() => {
+    setMap(null);
+  }, []);
 
   if (loadError) {
     return <MapError onReload={() => window.location.reload()} />;
@@ -99,21 +87,13 @@ export const TreeMap = ({
 
         <GoogleMap
           zoom={zoom}
+          onLoad={onLoad}
           options={options}
           center={mapCenter}
           onClick={onMapClick}
+          onUnmount={onUnmount}
           mapContainerClassName="w-full h-full"
-        >
-          {trees.map((tree) => (
-            <Marker
-              key={tree.id}
-              icon={treeIcon}
-              title={tree.species}
-              onClick={() => setSelectedTree(tree)}
-              position={{ lat: tree.latitude, lng: tree.longitude }}
-            />
-          ))}
-        </GoogleMap>
+        />
       </div>
 
       <AddTreeDialog
