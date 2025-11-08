@@ -30,6 +30,36 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 export type MagicLinkToken = $Result.DefaultSelection<Prisma.$MagicLinkTokenPayload>
 
 /**
+ * Enums
+ */
+export namespace $Enums {
+  export const TreeStatus: {
+  pending: 'pending',
+  approved: 'approved',
+  rejected: 'rejected'
+};
+
+export type TreeStatus = (typeof TreeStatus)[keyof typeof TreeStatus]
+
+
+export const UserRole: {
+  user: 'user',
+  admin: 'admin'
+};
+
+export type UserRole = (typeof UserRole)[keyof typeof UserRole]
+
+}
+
+export type TreeStatus = $Enums.TreeStatus
+
+export const TreeStatus: typeof $Enums.TreeStatus
+
+export type UserRole = $Enums.UserRole
+
+export const UserRole: typeof $Enums.UserRole
+
+/**
  * ##  Prisma Client ʲˢ
  *
  * Type-safe database client for TypeScript & Node.js
@@ -1051,11 +1081,13 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
-    trees: number
+    createdTrees: number
+    approvedTrees: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    trees?: boolean | UserCountOutputTypeCountTreesArgs
+    createdTrees?: boolean | UserCountOutputTypeCountCreatedTreesArgs
+    approvedTrees?: boolean | UserCountOutputTypeCountApprovedTreesArgs
   }
 
   // Custom InputTypes
@@ -1072,7 +1104,14 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountTreesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserCountOutputTypeCountCreatedTreesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TreeWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountApprovedTreesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TreeWhereInput
   }
 
@@ -1097,14 +1136,16 @@ export namespace Prisma {
     id: number | null
     latitude: number | null
     longitude: number | null
-    userId: number | null
+    approvedById: number | null
+    creatorId: number | null
   }
 
   export type TreeSumAggregateOutputType = {
     id: number | null
     latitude: number | null
     longitude: number | null
-    userId: number | null
+    approvedById: number | null
+    creatorId: number | null
   }
 
   export type TreeMinAggregateOutputType = {
@@ -1114,7 +1155,10 @@ export namespace Prisma {
     species: string | null
     note: string | null
     createdAt: Date | null
-    userId: number | null
+    status: $Enums.TreeStatus | null
+    approvedById: number | null
+    approvedAt: Date | null
+    creatorId: number | null
   }
 
   export type TreeMaxAggregateOutputType = {
@@ -1124,7 +1168,10 @@ export namespace Prisma {
     species: string | null
     note: string | null
     createdAt: Date | null
-    userId: number | null
+    status: $Enums.TreeStatus | null
+    approvedById: number | null
+    approvedAt: Date | null
+    creatorId: number | null
   }
 
   export type TreeCountAggregateOutputType = {
@@ -1134,7 +1181,10 @@ export namespace Prisma {
     species: number
     note: number
     createdAt: number
-    userId: number
+    status: number
+    approvedById: number
+    approvedAt: number
+    creatorId: number
     _all: number
   }
 
@@ -1143,14 +1193,16 @@ export namespace Prisma {
     id?: true
     latitude?: true
     longitude?: true
-    userId?: true
+    approvedById?: true
+    creatorId?: true
   }
 
   export type TreeSumAggregateInputType = {
     id?: true
     latitude?: true
     longitude?: true
-    userId?: true
+    approvedById?: true
+    creatorId?: true
   }
 
   export type TreeMinAggregateInputType = {
@@ -1160,7 +1212,10 @@ export namespace Prisma {
     species?: true
     note?: true
     createdAt?: true
-    userId?: true
+    status?: true
+    approvedById?: true
+    approvedAt?: true
+    creatorId?: true
   }
 
   export type TreeMaxAggregateInputType = {
@@ -1170,7 +1225,10 @@ export namespace Prisma {
     species?: true
     note?: true
     createdAt?: true
-    userId?: true
+    status?: true
+    approvedById?: true
+    approvedAt?: true
+    creatorId?: true
   }
 
   export type TreeCountAggregateInputType = {
@@ -1180,7 +1238,10 @@ export namespace Prisma {
     species?: true
     note?: true
     createdAt?: true
-    userId?: true
+    status?: true
+    approvedById?: true
+    approvedAt?: true
+    creatorId?: true
     _all?: true
   }
 
@@ -1277,7 +1338,10 @@ export namespace Prisma {
     species: string
     note: string | null
     createdAt: Date
-    userId: number | null
+    status: $Enums.TreeStatus
+    approvedById: number | null
+    approvedAt: Date | null
+    creatorId: number | null
     _count: TreeCountAggregateOutputType | null
     _avg: TreeAvgAggregateOutputType | null
     _sum: TreeSumAggregateOutputType | null
@@ -1306,8 +1370,12 @@ export namespace Prisma {
     species?: boolean
     note?: boolean
     createdAt?: boolean
-    userId?: boolean
-    User?: boolean | Tree$UserArgs<ExtArgs>
+    status?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
+    creatorId?: boolean
+    approvedBy?: boolean | Tree$approvedByArgs<ExtArgs>
+    creator?: boolean | Tree$creatorArgs<ExtArgs>
   }, ExtArgs["result"]["tree"]>
 
   export type TreeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1317,8 +1385,12 @@ export namespace Prisma {
     species?: boolean
     note?: boolean
     createdAt?: boolean
-    userId?: boolean
-    User?: boolean | Tree$UserArgs<ExtArgs>
+    status?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
+    creatorId?: boolean
+    approvedBy?: boolean | Tree$approvedByArgs<ExtArgs>
+    creator?: boolean | Tree$creatorArgs<ExtArgs>
   }, ExtArgs["result"]["tree"]>
 
   export type TreeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1328,8 +1400,12 @@ export namespace Prisma {
     species?: boolean
     note?: boolean
     createdAt?: boolean
-    userId?: boolean
-    User?: boolean | Tree$UserArgs<ExtArgs>
+    status?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
+    creatorId?: boolean
+    approvedBy?: boolean | Tree$approvedByArgs<ExtArgs>
+    creator?: boolean | Tree$creatorArgs<ExtArgs>
   }, ExtArgs["result"]["tree"]>
 
   export type TreeSelectScalar = {
@@ -1339,24 +1415,31 @@ export namespace Prisma {
     species?: boolean
     note?: boolean
     createdAt?: boolean
-    userId?: boolean
+    status?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
+    creatorId?: boolean
   }
 
-  export type TreeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "latitude" | "longitude" | "species" | "note" | "createdAt" | "userId", ExtArgs["result"]["tree"]>
+  export type TreeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "latitude" | "longitude" | "species" | "note" | "createdAt" | "status" | "approvedById" | "approvedAt" | "creatorId", ExtArgs["result"]["tree"]>
   export type TreeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    User?: boolean | Tree$UserArgs<ExtArgs>
+    approvedBy?: boolean | Tree$approvedByArgs<ExtArgs>
+    creator?: boolean | Tree$creatorArgs<ExtArgs>
   }
   export type TreeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    User?: boolean | Tree$UserArgs<ExtArgs>
+    approvedBy?: boolean | Tree$approvedByArgs<ExtArgs>
+    creator?: boolean | Tree$creatorArgs<ExtArgs>
   }
   export type TreeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    User?: boolean | Tree$UserArgs<ExtArgs>
+    approvedBy?: boolean | Tree$approvedByArgs<ExtArgs>
+    creator?: boolean | Tree$creatorArgs<ExtArgs>
   }
 
   export type $TreePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Tree"
     objects: {
-      User: Prisma.$UserPayload<ExtArgs> | null
+      approvedBy: Prisma.$UserPayload<ExtArgs> | null
+      creator: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -1365,7 +1448,10 @@ export namespace Prisma {
       species: string
       note: string | null
       createdAt: Date
-      userId: number | null
+      status: $Enums.TreeStatus
+      approvedById: number | null
+      approvedAt: Date | null
+      creatorId: number | null
     }, ExtArgs["result"]["tree"]>
     composites: {}
   }
@@ -1760,7 +1846,8 @@ export namespace Prisma {
    */
   export interface Prisma__TreeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    User<T extends Tree$UserArgs<ExtArgs> = {}>(args?: Subset<T, Tree$UserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    approvedBy<T extends Tree$approvedByArgs<ExtArgs> = {}>(args?: Subset<T, Tree$approvedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    creator<T extends Tree$creatorArgs<ExtArgs> = {}>(args?: Subset<T, Tree$creatorArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1796,7 +1883,10 @@ export namespace Prisma {
     readonly species: FieldRef<"Tree", 'String'>
     readonly note: FieldRef<"Tree", 'String'>
     readonly createdAt: FieldRef<"Tree", 'DateTime'>
-    readonly userId: FieldRef<"Tree", 'Int'>
+    readonly status: FieldRef<"Tree", 'TreeStatus'>
+    readonly approvedById: FieldRef<"Tree", 'Int'>
+    readonly approvedAt: FieldRef<"Tree", 'DateTime'>
+    readonly creatorId: FieldRef<"Tree", 'Int'>
   }
     
 
@@ -2193,9 +2283,28 @@ export namespace Prisma {
   }
 
   /**
-   * Tree.User
+   * Tree.approvedBy
    */
-  export type Tree$UserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Tree$approvedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * Tree.creator
+   */
+  export type Tree$creatorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the User
      */
@@ -2255,6 +2364,7 @@ export namespace Prisma {
     name: string | null
     email: string | null
     createdAt: Date | null
+    role: $Enums.UserRole | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -2262,6 +2372,7 @@ export namespace Prisma {
     name: string | null
     email: string | null
     createdAt: Date | null
+    role: $Enums.UserRole | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -2269,6 +2380,7 @@ export namespace Prisma {
     name: number
     email: number
     createdAt: number
+    role: number
     _all: number
   }
 
@@ -2286,6 +2398,7 @@ export namespace Prisma {
     name?: true
     email?: true
     createdAt?: true
+    role?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -2293,6 +2406,7 @@ export namespace Prisma {
     name?: true
     email?: true
     createdAt?: true
+    role?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -2300,6 +2414,7 @@ export namespace Prisma {
     name?: true
     email?: true
     createdAt?: true
+    role?: true
     _all?: true
   }
 
@@ -2394,6 +2509,7 @@ export namespace Prisma {
     name: string | null
     email: string | null
     createdAt: Date
+    role: $Enums.UserRole
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
     _sum: UserSumAggregateOutputType | null
@@ -2420,7 +2536,9 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     createdAt?: boolean
-    trees?: boolean | User$treesArgs<ExtArgs>
+    role?: boolean
+    createdTrees?: boolean | User$createdTreesArgs<ExtArgs>
+    approvedTrees?: boolean | User$approvedTreesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2429,6 +2547,7 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     createdAt?: boolean
+    role?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2436,6 +2555,7 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     createdAt?: boolean
+    role?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -2443,11 +2563,13 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     createdAt?: boolean
+    role?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "createdAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "createdAt" | "role", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    trees?: boolean | User$treesArgs<ExtArgs>
+    createdTrees?: boolean | User$createdTreesArgs<ExtArgs>
+    approvedTrees?: boolean | User$approvedTreesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2456,13 +2578,15 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
-      trees: Prisma.$TreePayload<ExtArgs>[]
+      createdTrees: Prisma.$TreePayload<ExtArgs>[]
+      approvedTrees: Prisma.$TreePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       name: string | null
       email: string | null
       createdAt: Date
+      role: $Enums.UserRole
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -2857,7 +2981,8 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    trees<T extends User$treesArgs<ExtArgs> = {}>(args?: Subset<T, User$treesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TreePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    createdTrees<T extends User$createdTreesArgs<ExtArgs> = {}>(args?: Subset<T, User$createdTreesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TreePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    approvedTrees<T extends User$approvedTreesArgs<ExtArgs> = {}>(args?: Subset<T, User$approvedTreesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TreePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2891,6 +3016,7 @@ export namespace Prisma {
     readonly name: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
+    readonly role: FieldRef<"User", 'UserRole'>
   }
     
 
@@ -3279,9 +3405,33 @@ export namespace Prisma {
   }
 
   /**
-   * User.trees
+   * User.createdTrees
    */
-  export type User$treesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$createdTreesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Tree
+     */
+    select?: TreeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Tree
+     */
+    omit?: TreeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TreeInclude<ExtArgs> | null
+    where?: TreeWhereInput
+    orderBy?: TreeOrderByWithRelationInput | TreeOrderByWithRelationInput[]
+    cursor?: TreeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TreeScalarFieldEnum | TreeScalarFieldEnum[]
+  }
+
+  /**
+   * User.approvedTrees
+   */
+  export type User$approvedTreesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Tree
      */
@@ -4384,7 +4534,10 @@ export namespace Prisma {
     species: 'species',
     note: 'note',
     createdAt: 'createdAt',
-    userId: 'userId'
+    status: 'status',
+    approvedById: 'approvedById',
+    approvedAt: 'approvedAt',
+    creatorId: 'creatorId'
   };
 
   export type TreeScalarFieldEnum = (typeof TreeScalarFieldEnum)[keyof typeof TreeScalarFieldEnum]
@@ -4394,7 +4547,8 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     email: 'email',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    role: 'role'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -4498,6 +4652,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'TreeStatus'
+   */
+  export type EnumTreeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TreeStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'TreeStatus[]'
+   */
+  export type ListEnumTreeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TreeStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'UserRole'
+   */
+  export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
+    
+
+
+  /**
+   * Reference to a field of type 'UserRole[]'
+   */
+  export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
@@ -4517,8 +4699,12 @@ export namespace Prisma {
     species?: StringFilter<"Tree"> | string
     note?: StringNullableFilter<"Tree"> | string | null
     createdAt?: DateTimeFilter<"Tree"> | Date | string
-    userId?: IntNullableFilter<"Tree"> | number | null
-    User?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    status?: EnumTreeStatusFilter<"Tree"> | $Enums.TreeStatus
+    approvedById?: IntNullableFilter<"Tree"> | number | null
+    approvedAt?: DateTimeNullableFilter<"Tree"> | Date | string | null
+    creatorId?: IntNullableFilter<"Tree"> | number | null
+    approvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    creator?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
   export type TreeOrderByWithRelationInput = {
@@ -4528,8 +4714,12 @@ export namespace Prisma {
     species?: SortOrder
     note?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    userId?: SortOrderInput | SortOrder
-    User?: UserOrderByWithRelationInput
+    status?: SortOrder
+    approvedById?: SortOrderInput | SortOrder
+    approvedAt?: SortOrderInput | SortOrder
+    creatorId?: SortOrderInput | SortOrder
+    approvedBy?: UserOrderByWithRelationInput
+    creator?: UserOrderByWithRelationInput
   }
 
   export type TreeWhereUniqueInput = Prisma.AtLeast<{
@@ -4542,8 +4732,12 @@ export namespace Prisma {
     species?: StringFilter<"Tree"> | string
     note?: StringNullableFilter<"Tree"> | string | null
     createdAt?: DateTimeFilter<"Tree"> | Date | string
-    userId?: IntNullableFilter<"Tree"> | number | null
-    User?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    status?: EnumTreeStatusFilter<"Tree"> | $Enums.TreeStatus
+    approvedById?: IntNullableFilter<"Tree"> | number | null
+    approvedAt?: DateTimeNullableFilter<"Tree"> | Date | string | null
+    creatorId?: IntNullableFilter<"Tree"> | number | null
+    approvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    creator?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }, "id">
 
   export type TreeOrderByWithAggregationInput = {
@@ -4553,7 +4747,10 @@ export namespace Prisma {
     species?: SortOrder
     note?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    userId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    approvedById?: SortOrderInput | SortOrder
+    approvedAt?: SortOrderInput | SortOrder
+    creatorId?: SortOrderInput | SortOrder
     _count?: TreeCountOrderByAggregateInput
     _avg?: TreeAvgOrderByAggregateInput
     _max?: TreeMaxOrderByAggregateInput
@@ -4571,7 +4768,10 @@ export namespace Prisma {
     species?: StringWithAggregatesFilter<"Tree"> | string
     note?: StringNullableWithAggregatesFilter<"Tree"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Tree"> | Date | string
-    userId?: IntNullableWithAggregatesFilter<"Tree"> | number | null
+    status?: EnumTreeStatusWithAggregatesFilter<"Tree"> | $Enums.TreeStatus
+    approvedById?: IntNullableWithAggregatesFilter<"Tree"> | number | null
+    approvedAt?: DateTimeNullableWithAggregatesFilter<"Tree"> | Date | string | null
+    creatorId?: IntNullableWithAggregatesFilter<"Tree"> | number | null
   }
 
   export type UserWhereInput = {
@@ -4582,7 +4782,9 @@ export namespace Prisma {
     name?: StringNullableFilter<"User"> | string | null
     email?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
-    trees?: TreeListRelationFilter
+    role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
+    createdTrees?: TreeListRelationFilter
+    approvedTrees?: TreeListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -4590,7 +4792,9 @@ export namespace Prisma {
     name?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    trees?: TreeOrderByRelationAggregateInput
+    role?: SortOrder
+    createdTrees?: TreeOrderByRelationAggregateInput
+    approvedTrees?: TreeOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -4601,7 +4805,9 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     name?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
-    trees?: TreeListRelationFilter
+    role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
+    createdTrees?: TreeListRelationFilter
+    approvedTrees?: TreeListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -4609,6 +4815,7 @@ export namespace Prisma {
     name?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    role?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -4624,6 +4831,7 @@ export namespace Prisma {
     name?: StringNullableWithAggregatesFilter<"User"> | string | null
     email?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    role?: EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
   }
 
   export type MagicLinkTokenWhereInput = {
@@ -4691,7 +4899,10 @@ export namespace Prisma {
     species: string
     note?: string | null
     createdAt?: Date | string
-    User?: UserCreateNestedOneWithoutTreesInput
+    status?: $Enums.TreeStatus
+    approvedAt?: Date | string | null
+    approvedBy?: UserCreateNestedOneWithoutApprovedTreesInput
+    creator?: UserCreateNestedOneWithoutCreatedTreesInput
   }
 
   export type TreeUncheckedCreateInput = {
@@ -4701,7 +4912,10 @@ export namespace Prisma {
     species: string
     note?: string | null
     createdAt?: Date | string
-    userId?: number | null
+    status?: $Enums.TreeStatus
+    approvedById?: number | null
+    approvedAt?: Date | string | null
+    creatorId?: number | null
   }
 
   export type TreeUpdateInput = {
@@ -4710,7 +4924,10 @@ export namespace Prisma {
     species?: StringFieldUpdateOperationsInput | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    User?: UserUpdateOneWithoutTreesNestedInput
+    status?: EnumTreeStatusFieldUpdateOperationsInput | $Enums.TreeStatus
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedBy?: UserUpdateOneWithoutApprovedTreesNestedInput
+    creator?: UserUpdateOneWithoutCreatedTreesNestedInput
   }
 
   export type TreeUncheckedUpdateInput = {
@@ -4720,7 +4937,10 @@ export namespace Prisma {
     species?: StringFieldUpdateOperationsInput | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumTreeStatusFieldUpdateOperationsInput | $Enums.TreeStatus
+    approvedById?: NullableIntFieldUpdateOperationsInput | number | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    creatorId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type TreeCreateManyInput = {
@@ -4730,7 +4950,10 @@ export namespace Prisma {
     species: string
     note?: string | null
     createdAt?: Date | string
-    userId?: number | null
+    status?: $Enums.TreeStatus
+    approvedById?: number | null
+    approvedAt?: Date | string | null
+    creatorId?: number | null
   }
 
   export type TreeUpdateManyMutationInput = {
@@ -4739,6 +4962,8 @@ export namespace Prisma {
     species?: StringFieldUpdateOperationsInput | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumTreeStatusFieldUpdateOperationsInput | $Enums.TreeStatus
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TreeUncheckedUpdateManyInput = {
@@ -4748,14 +4973,19 @@ export namespace Prisma {
     species?: StringFieldUpdateOperationsInput | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumTreeStatusFieldUpdateOperationsInput | $Enums.TreeStatus
+    approvedById?: NullableIntFieldUpdateOperationsInput | number | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    creatorId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type UserCreateInput = {
     name?: string | null
     email?: string | null
     createdAt?: Date | string
-    trees?: TreeCreateNestedManyWithoutUserInput
+    role?: $Enums.UserRole
+    createdTrees?: TreeCreateNestedManyWithoutCreatorInput
+    approvedTrees?: TreeCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -4763,14 +4993,18 @@ export namespace Prisma {
     name?: string | null
     email?: string | null
     createdAt?: Date | string
-    trees?: TreeUncheckedCreateNestedManyWithoutUserInput
+    role?: $Enums.UserRole
+    createdTrees?: TreeUncheckedCreateNestedManyWithoutCreatorInput
+    approvedTrees?: TreeUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUpdateInput = {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    trees?: TreeUpdateManyWithoutUserNestedInput
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    createdTrees?: TreeUpdateManyWithoutCreatorNestedInput
+    approvedTrees?: TreeUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -4778,7 +5012,9 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    trees?: TreeUncheckedUpdateManyWithoutUserNestedInput
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    createdTrees?: TreeUncheckedUpdateManyWithoutCreatorNestedInput
+    approvedTrees?: TreeUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -4786,12 +5022,14 @@ export namespace Prisma {
     name?: string | null
     email?: string | null
     createdAt?: Date | string
+    role?: $Enums.UserRole
   }
 
   export type UserUpdateManyMutationInput = {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -4799,6 +5037,7 @@ export namespace Prisma {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   }
 
   export type MagicLinkTokenCreateInput = {
@@ -4924,6 +5163,13 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type EnumTreeStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TreeStatus | EnumTreeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TreeStatus[] | ListEnumTreeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TreeStatus[] | ListEnumTreeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTreeStatusFilter<$PrismaModel> | $Enums.TreeStatus
+  }
+
   export type IntNullableFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -4933,6 +5179,17 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type UserNullableScalarRelationFilter = {
@@ -4952,14 +5209,18 @@ export namespace Prisma {
     species?: SortOrder
     note?: SortOrder
     createdAt?: SortOrder
-    userId?: SortOrder
+    status?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
+    creatorId?: SortOrder
   }
 
   export type TreeAvgOrderByAggregateInput = {
     id?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
-    userId?: SortOrder
+    approvedById?: SortOrder
+    creatorId?: SortOrder
   }
 
   export type TreeMaxOrderByAggregateInput = {
@@ -4969,7 +5230,10 @@ export namespace Prisma {
     species?: SortOrder
     note?: SortOrder
     createdAt?: SortOrder
-    userId?: SortOrder
+    status?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
+    creatorId?: SortOrder
   }
 
   export type TreeMinOrderByAggregateInput = {
@@ -4979,14 +5243,18 @@ export namespace Prisma {
     species?: SortOrder
     note?: SortOrder
     createdAt?: SortOrder
-    userId?: SortOrder
+    status?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
+    creatorId?: SortOrder
   }
 
   export type TreeSumOrderByAggregateInput = {
     id?: SortOrder
     latitude?: SortOrder
     longitude?: SortOrder
-    userId?: SortOrder
+    approvedById?: SortOrder
+    creatorId?: SortOrder
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -5071,6 +5339,16 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type EnumTreeStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TreeStatus | EnumTreeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TreeStatus[] | ListEnumTreeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TreeStatus[] | ListEnumTreeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTreeStatusWithAggregatesFilter<$PrismaModel> | $Enums.TreeStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTreeStatusFilter<$PrismaModel>
+    _max?: NestedEnumTreeStatusFilter<$PrismaModel>
+  }
+
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -5085,6 +5363,27 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumUserRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserRoleFilter<$PrismaModel> | $Enums.UserRole
   }
 
   export type TreeListRelationFilter = {
@@ -5102,6 +5401,7 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     createdAt?: SortOrder
+    role?: SortOrder
   }
 
   export type UserAvgOrderByAggregateInput = {
@@ -5113,6 +5413,7 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     createdAt?: SortOrder
+    role?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -5120,10 +5421,21 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     createdAt?: SortOrder
+    role?: SortOrder
   }
 
   export type UserSumOrderByAggregateInput = {
     id?: SortOrder
+  }
+
+  export type EnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserRoleWithAggregatesFilter<$PrismaModel> | $Enums.UserRole
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumUserRoleFilter<$PrismaModel>
+    _max?: NestedEnumUserRoleFilter<$PrismaModel>
   }
 
   export type BoolFilter<$PrismaModel = never> = {
@@ -5174,9 +5486,15 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type UserCreateNestedOneWithoutTreesInput = {
-    create?: XOR<UserCreateWithoutTreesInput, UserUncheckedCreateWithoutTreesInput>
-    connectOrCreate?: UserCreateOrConnectWithoutTreesInput
+  export type UserCreateNestedOneWithoutApprovedTreesInput = {
+    create?: XOR<UserCreateWithoutApprovedTreesInput, UserUncheckedCreateWithoutApprovedTreesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutApprovedTreesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutCreatedTreesInput = {
+    create?: XOR<UserCreateWithoutCreatedTreesInput, UserUncheckedCreateWithoutCreatedTreesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedTreesInput
     connect?: UserWhereUniqueInput
   }
 
@@ -5200,14 +5518,32 @@ export namespace Prisma {
     set?: Date | string
   }
 
-  export type UserUpdateOneWithoutTreesNestedInput = {
-    create?: XOR<UserCreateWithoutTreesInput, UserUncheckedCreateWithoutTreesInput>
-    connectOrCreate?: UserCreateOrConnectWithoutTreesInput
-    upsert?: UserUpsertWithoutTreesInput
+  export type EnumTreeStatusFieldUpdateOperationsInput = {
+    set?: $Enums.TreeStatus
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type UserUpdateOneWithoutApprovedTreesNestedInput = {
+    create?: XOR<UserCreateWithoutApprovedTreesInput, UserUncheckedCreateWithoutApprovedTreesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutApprovedTreesInput
+    upsert?: UserUpsertWithoutApprovedTreesInput
     disconnect?: UserWhereInput | boolean
     delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTreesInput, UserUpdateWithoutTreesInput>, UserUncheckedUpdateWithoutTreesInput>
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutApprovedTreesInput, UserUpdateWithoutApprovedTreesInput>, UserUncheckedUpdateWithoutApprovedTreesInput>
+  }
+
+  export type UserUpdateOneWithoutCreatedTreesNestedInput = {
+    create?: XOR<UserCreateWithoutCreatedTreesInput, UserUncheckedCreateWithoutCreatedTreesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedTreesInput
+    upsert?: UserUpsertWithoutCreatedTreesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedTreesInput, UserUpdateWithoutCreatedTreesInput>, UserUncheckedUpdateWithoutCreatedTreesInput>
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -5226,45 +5562,91 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type TreeCreateNestedManyWithoutUserInput = {
-    create?: XOR<TreeCreateWithoutUserInput, TreeUncheckedCreateWithoutUserInput> | TreeCreateWithoutUserInput[] | TreeUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: TreeCreateOrConnectWithoutUserInput | TreeCreateOrConnectWithoutUserInput[]
-    createMany?: TreeCreateManyUserInputEnvelope
+  export type TreeCreateNestedManyWithoutCreatorInput = {
+    create?: XOR<TreeCreateWithoutCreatorInput, TreeUncheckedCreateWithoutCreatorInput> | TreeCreateWithoutCreatorInput[] | TreeUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: TreeCreateOrConnectWithoutCreatorInput | TreeCreateOrConnectWithoutCreatorInput[]
+    createMany?: TreeCreateManyCreatorInputEnvelope
     connect?: TreeWhereUniqueInput | TreeWhereUniqueInput[]
   }
 
-  export type TreeUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<TreeCreateWithoutUserInput, TreeUncheckedCreateWithoutUserInput> | TreeCreateWithoutUserInput[] | TreeUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: TreeCreateOrConnectWithoutUserInput | TreeCreateOrConnectWithoutUserInput[]
-    createMany?: TreeCreateManyUserInputEnvelope
+  export type TreeCreateNestedManyWithoutApprovedByInput = {
+    create?: XOR<TreeCreateWithoutApprovedByInput, TreeUncheckedCreateWithoutApprovedByInput> | TreeCreateWithoutApprovedByInput[] | TreeUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: TreeCreateOrConnectWithoutApprovedByInput | TreeCreateOrConnectWithoutApprovedByInput[]
+    createMany?: TreeCreateManyApprovedByInputEnvelope
     connect?: TreeWhereUniqueInput | TreeWhereUniqueInput[]
   }
 
-  export type TreeUpdateManyWithoutUserNestedInput = {
-    create?: XOR<TreeCreateWithoutUserInput, TreeUncheckedCreateWithoutUserInput> | TreeCreateWithoutUserInput[] | TreeUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: TreeCreateOrConnectWithoutUserInput | TreeCreateOrConnectWithoutUserInput[]
-    upsert?: TreeUpsertWithWhereUniqueWithoutUserInput | TreeUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: TreeCreateManyUserInputEnvelope
+  export type TreeUncheckedCreateNestedManyWithoutCreatorInput = {
+    create?: XOR<TreeCreateWithoutCreatorInput, TreeUncheckedCreateWithoutCreatorInput> | TreeCreateWithoutCreatorInput[] | TreeUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: TreeCreateOrConnectWithoutCreatorInput | TreeCreateOrConnectWithoutCreatorInput[]
+    createMany?: TreeCreateManyCreatorInputEnvelope
+    connect?: TreeWhereUniqueInput | TreeWhereUniqueInput[]
+  }
+
+  export type TreeUncheckedCreateNestedManyWithoutApprovedByInput = {
+    create?: XOR<TreeCreateWithoutApprovedByInput, TreeUncheckedCreateWithoutApprovedByInput> | TreeCreateWithoutApprovedByInput[] | TreeUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: TreeCreateOrConnectWithoutApprovedByInput | TreeCreateOrConnectWithoutApprovedByInput[]
+    createMany?: TreeCreateManyApprovedByInputEnvelope
+    connect?: TreeWhereUniqueInput | TreeWhereUniqueInput[]
+  }
+
+  export type EnumUserRoleFieldUpdateOperationsInput = {
+    set?: $Enums.UserRole
+  }
+
+  export type TreeUpdateManyWithoutCreatorNestedInput = {
+    create?: XOR<TreeCreateWithoutCreatorInput, TreeUncheckedCreateWithoutCreatorInput> | TreeCreateWithoutCreatorInput[] | TreeUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: TreeCreateOrConnectWithoutCreatorInput | TreeCreateOrConnectWithoutCreatorInput[]
+    upsert?: TreeUpsertWithWhereUniqueWithoutCreatorInput | TreeUpsertWithWhereUniqueWithoutCreatorInput[]
+    createMany?: TreeCreateManyCreatorInputEnvelope
     set?: TreeWhereUniqueInput | TreeWhereUniqueInput[]
     disconnect?: TreeWhereUniqueInput | TreeWhereUniqueInput[]
     delete?: TreeWhereUniqueInput | TreeWhereUniqueInput[]
     connect?: TreeWhereUniqueInput | TreeWhereUniqueInput[]
-    update?: TreeUpdateWithWhereUniqueWithoutUserInput | TreeUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: TreeUpdateManyWithWhereWithoutUserInput | TreeUpdateManyWithWhereWithoutUserInput[]
+    update?: TreeUpdateWithWhereUniqueWithoutCreatorInput | TreeUpdateWithWhereUniqueWithoutCreatorInput[]
+    updateMany?: TreeUpdateManyWithWhereWithoutCreatorInput | TreeUpdateManyWithWhereWithoutCreatorInput[]
     deleteMany?: TreeScalarWhereInput | TreeScalarWhereInput[]
   }
 
-  export type TreeUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<TreeCreateWithoutUserInput, TreeUncheckedCreateWithoutUserInput> | TreeCreateWithoutUserInput[] | TreeUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: TreeCreateOrConnectWithoutUserInput | TreeCreateOrConnectWithoutUserInput[]
-    upsert?: TreeUpsertWithWhereUniqueWithoutUserInput | TreeUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: TreeCreateManyUserInputEnvelope
+  export type TreeUpdateManyWithoutApprovedByNestedInput = {
+    create?: XOR<TreeCreateWithoutApprovedByInput, TreeUncheckedCreateWithoutApprovedByInput> | TreeCreateWithoutApprovedByInput[] | TreeUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: TreeCreateOrConnectWithoutApprovedByInput | TreeCreateOrConnectWithoutApprovedByInput[]
+    upsert?: TreeUpsertWithWhereUniqueWithoutApprovedByInput | TreeUpsertWithWhereUniqueWithoutApprovedByInput[]
+    createMany?: TreeCreateManyApprovedByInputEnvelope
     set?: TreeWhereUniqueInput | TreeWhereUniqueInput[]
     disconnect?: TreeWhereUniqueInput | TreeWhereUniqueInput[]
     delete?: TreeWhereUniqueInput | TreeWhereUniqueInput[]
     connect?: TreeWhereUniqueInput | TreeWhereUniqueInput[]
-    update?: TreeUpdateWithWhereUniqueWithoutUserInput | TreeUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: TreeUpdateManyWithWhereWithoutUserInput | TreeUpdateManyWithWhereWithoutUserInput[]
+    update?: TreeUpdateWithWhereUniqueWithoutApprovedByInput | TreeUpdateWithWhereUniqueWithoutApprovedByInput[]
+    updateMany?: TreeUpdateManyWithWhereWithoutApprovedByInput | TreeUpdateManyWithWhereWithoutApprovedByInput[]
+    deleteMany?: TreeScalarWhereInput | TreeScalarWhereInput[]
+  }
+
+  export type TreeUncheckedUpdateManyWithoutCreatorNestedInput = {
+    create?: XOR<TreeCreateWithoutCreatorInput, TreeUncheckedCreateWithoutCreatorInput> | TreeCreateWithoutCreatorInput[] | TreeUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: TreeCreateOrConnectWithoutCreatorInput | TreeCreateOrConnectWithoutCreatorInput[]
+    upsert?: TreeUpsertWithWhereUniqueWithoutCreatorInput | TreeUpsertWithWhereUniqueWithoutCreatorInput[]
+    createMany?: TreeCreateManyCreatorInputEnvelope
+    set?: TreeWhereUniqueInput | TreeWhereUniqueInput[]
+    disconnect?: TreeWhereUniqueInput | TreeWhereUniqueInput[]
+    delete?: TreeWhereUniqueInput | TreeWhereUniqueInput[]
+    connect?: TreeWhereUniqueInput | TreeWhereUniqueInput[]
+    update?: TreeUpdateWithWhereUniqueWithoutCreatorInput | TreeUpdateWithWhereUniqueWithoutCreatorInput[]
+    updateMany?: TreeUpdateManyWithWhereWithoutCreatorInput | TreeUpdateManyWithWhereWithoutCreatorInput[]
+    deleteMany?: TreeScalarWhereInput | TreeScalarWhereInput[]
+  }
+
+  export type TreeUncheckedUpdateManyWithoutApprovedByNestedInput = {
+    create?: XOR<TreeCreateWithoutApprovedByInput, TreeUncheckedCreateWithoutApprovedByInput> | TreeCreateWithoutApprovedByInput[] | TreeUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: TreeCreateOrConnectWithoutApprovedByInput | TreeCreateOrConnectWithoutApprovedByInput[]
+    upsert?: TreeUpsertWithWhereUniqueWithoutApprovedByInput | TreeUpsertWithWhereUniqueWithoutApprovedByInput[]
+    createMany?: TreeCreateManyApprovedByInputEnvelope
+    set?: TreeWhereUniqueInput | TreeWhereUniqueInput[]
+    disconnect?: TreeWhereUniqueInput | TreeWhereUniqueInput[]
+    delete?: TreeWhereUniqueInput | TreeWhereUniqueInput[]
+    connect?: TreeWhereUniqueInput | TreeWhereUniqueInput[]
+    update?: TreeUpdateWithWhereUniqueWithoutApprovedByInput | TreeUpdateWithWhereUniqueWithoutApprovedByInput[]
+    updateMany?: TreeUpdateManyWithWhereWithoutApprovedByInput | TreeUpdateManyWithWhereWithoutApprovedByInput[]
     deleteMany?: TreeScalarWhereInput | TreeScalarWhereInput[]
   }
 
@@ -5333,6 +5715,13 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type NestedEnumTreeStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TreeStatus | EnumTreeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TreeStatus[] | ListEnumTreeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TreeStatus[] | ListEnumTreeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTreeStatusFilter<$PrismaModel> | $Enums.TreeStatus
+  }
+
   export type NestedIntNullableFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -5342,6 +5731,17 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -5424,6 +5824,16 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedEnumTreeStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TreeStatus | EnumTreeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TreeStatus[] | ListEnumTreeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TreeStatus[] | ListEnumTreeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTreeStatusWithAggregatesFilter<$PrismaModel> | $Enums.TreeStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTreeStatusFilter<$PrismaModel>
+    _max?: NestedEnumTreeStatusFilter<$PrismaModel>
+  }
+
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -5451,6 +5861,37 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumUserRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserRoleFilter<$PrismaModel> | $Enums.UserRole
+  }
+
+  export type NestedEnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserRoleWithAggregatesFilter<$PrismaModel> | $Enums.UserRole
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumUserRoleFilter<$PrismaModel>
+    _max?: NestedEnumUserRoleFilter<$PrismaModel>
+  }
+
   export type NestedBoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
@@ -5464,89 +5905,186 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type UserCreateWithoutTreesInput = {
+  export type UserCreateWithoutApprovedTreesInput = {
     name?: string | null
     email?: string | null
     createdAt?: Date | string
+    role?: $Enums.UserRole
+    createdTrees?: TreeCreateNestedManyWithoutCreatorInput
   }
 
-  export type UserUncheckedCreateWithoutTreesInput = {
+  export type UserUncheckedCreateWithoutApprovedTreesInput = {
     id?: number
     name?: string | null
     email?: string | null
     createdAt?: Date | string
+    role?: $Enums.UserRole
+    createdTrees?: TreeUncheckedCreateNestedManyWithoutCreatorInput
   }
 
-  export type UserCreateOrConnectWithoutTreesInput = {
+  export type UserCreateOrConnectWithoutApprovedTreesInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutTreesInput, UserUncheckedCreateWithoutTreesInput>
+    create: XOR<UserCreateWithoutApprovedTreesInput, UserUncheckedCreateWithoutApprovedTreesInput>
   }
 
-  export type UserUpsertWithoutTreesInput = {
-    update: XOR<UserUpdateWithoutTreesInput, UserUncheckedUpdateWithoutTreesInput>
-    create: XOR<UserCreateWithoutTreesInput, UserUncheckedCreateWithoutTreesInput>
+  export type UserCreateWithoutCreatedTreesInput = {
+    name?: string | null
+    email?: string | null
+    createdAt?: Date | string
+    role?: $Enums.UserRole
+    approvedTrees?: TreeCreateNestedManyWithoutApprovedByInput
+  }
+
+  export type UserUncheckedCreateWithoutCreatedTreesInput = {
+    id?: number
+    name?: string | null
+    email?: string | null
+    createdAt?: Date | string
+    role?: $Enums.UserRole
+    approvedTrees?: TreeUncheckedCreateNestedManyWithoutApprovedByInput
+  }
+
+  export type UserCreateOrConnectWithoutCreatedTreesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCreatedTreesInput, UserUncheckedCreateWithoutCreatedTreesInput>
+  }
+
+  export type UserUpsertWithoutApprovedTreesInput = {
+    update: XOR<UserUpdateWithoutApprovedTreesInput, UserUncheckedUpdateWithoutApprovedTreesInput>
+    create: XOR<UserCreateWithoutApprovedTreesInput, UserUncheckedCreateWithoutApprovedTreesInput>
     where?: UserWhereInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutTreesInput = {
+  export type UserUpdateToOneWithWhereWithoutApprovedTreesInput = {
     where?: UserWhereInput
-    data: XOR<UserUpdateWithoutTreesInput, UserUncheckedUpdateWithoutTreesInput>
+    data: XOR<UserUpdateWithoutApprovedTreesInput, UserUncheckedUpdateWithoutApprovedTreesInput>
   }
 
-  export type UserUpdateWithoutTreesInput = {
+  export type UserUpdateWithoutApprovedTreesInput = {
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    createdTrees?: TreeUpdateManyWithoutCreatorNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutTreesInput = {
+  export type UserUncheckedUpdateWithoutApprovedTreesInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    createdTrees?: TreeUncheckedUpdateManyWithoutCreatorNestedInput
   }
 
-  export type TreeCreateWithoutUserInput = {
+  export type UserUpsertWithoutCreatedTreesInput = {
+    update: XOR<UserUpdateWithoutCreatedTreesInput, UserUncheckedUpdateWithoutCreatedTreesInput>
+    create: XOR<UserCreateWithoutCreatedTreesInput, UserUncheckedCreateWithoutCreatedTreesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCreatedTreesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCreatedTreesInput, UserUncheckedUpdateWithoutCreatedTreesInput>
+  }
+
+  export type UserUpdateWithoutCreatedTreesInput = {
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    approvedTrees?: TreeUpdateManyWithoutApprovedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCreatedTreesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    approvedTrees?: TreeUncheckedUpdateManyWithoutApprovedByNestedInput
+  }
+
+  export type TreeCreateWithoutCreatorInput = {
     latitude: number
     longitude: number
     species: string
     note?: string | null
     createdAt?: Date | string
+    status?: $Enums.TreeStatus
+    approvedAt?: Date | string | null
+    approvedBy?: UserCreateNestedOneWithoutApprovedTreesInput
   }
 
-  export type TreeUncheckedCreateWithoutUserInput = {
+  export type TreeUncheckedCreateWithoutCreatorInput = {
     id?: number
     latitude: number
     longitude: number
     species: string
     note?: string | null
     createdAt?: Date | string
+    status?: $Enums.TreeStatus
+    approvedById?: number | null
+    approvedAt?: Date | string | null
   }
 
-  export type TreeCreateOrConnectWithoutUserInput = {
+  export type TreeCreateOrConnectWithoutCreatorInput = {
     where: TreeWhereUniqueInput
-    create: XOR<TreeCreateWithoutUserInput, TreeUncheckedCreateWithoutUserInput>
+    create: XOR<TreeCreateWithoutCreatorInput, TreeUncheckedCreateWithoutCreatorInput>
   }
 
-  export type TreeCreateManyUserInputEnvelope = {
-    data: TreeCreateManyUserInput | TreeCreateManyUserInput[]
+  export type TreeCreateManyCreatorInputEnvelope = {
+    data: TreeCreateManyCreatorInput | TreeCreateManyCreatorInput[]
     skipDuplicates?: boolean
   }
 
-  export type TreeUpsertWithWhereUniqueWithoutUserInput = {
-    where: TreeWhereUniqueInput
-    update: XOR<TreeUpdateWithoutUserInput, TreeUncheckedUpdateWithoutUserInput>
-    create: XOR<TreeCreateWithoutUserInput, TreeUncheckedCreateWithoutUserInput>
+  export type TreeCreateWithoutApprovedByInput = {
+    latitude: number
+    longitude: number
+    species: string
+    note?: string | null
+    createdAt?: Date | string
+    status?: $Enums.TreeStatus
+    approvedAt?: Date | string | null
+    creator?: UserCreateNestedOneWithoutCreatedTreesInput
   }
 
-  export type TreeUpdateWithWhereUniqueWithoutUserInput = {
-    where: TreeWhereUniqueInput
-    data: XOR<TreeUpdateWithoutUserInput, TreeUncheckedUpdateWithoutUserInput>
+  export type TreeUncheckedCreateWithoutApprovedByInput = {
+    id?: number
+    latitude: number
+    longitude: number
+    species: string
+    note?: string | null
+    createdAt?: Date | string
+    status?: $Enums.TreeStatus
+    approvedAt?: Date | string | null
+    creatorId?: number | null
   }
 
-  export type TreeUpdateManyWithWhereWithoutUserInput = {
+  export type TreeCreateOrConnectWithoutApprovedByInput = {
+    where: TreeWhereUniqueInput
+    create: XOR<TreeCreateWithoutApprovedByInput, TreeUncheckedCreateWithoutApprovedByInput>
+  }
+
+  export type TreeCreateManyApprovedByInputEnvelope = {
+    data: TreeCreateManyApprovedByInput | TreeCreateManyApprovedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TreeUpsertWithWhereUniqueWithoutCreatorInput = {
+    where: TreeWhereUniqueInput
+    update: XOR<TreeUpdateWithoutCreatorInput, TreeUncheckedUpdateWithoutCreatorInput>
+    create: XOR<TreeCreateWithoutCreatorInput, TreeUncheckedCreateWithoutCreatorInput>
+  }
+
+  export type TreeUpdateWithWhereUniqueWithoutCreatorInput = {
+    where: TreeWhereUniqueInput
+    data: XOR<TreeUpdateWithoutCreatorInput, TreeUncheckedUpdateWithoutCreatorInput>
+  }
+
+  export type TreeUpdateManyWithWhereWithoutCreatorInput = {
     where: TreeScalarWhereInput
-    data: XOR<TreeUpdateManyMutationInput, TreeUncheckedUpdateManyWithoutUserInput>
+    data: XOR<TreeUpdateManyMutationInput, TreeUncheckedUpdateManyWithoutCreatorInput>
   }
 
   export type TreeScalarWhereInput = {
@@ -5559,42 +6097,120 @@ export namespace Prisma {
     species?: StringFilter<"Tree"> | string
     note?: StringNullableFilter<"Tree"> | string | null
     createdAt?: DateTimeFilter<"Tree"> | Date | string
-    userId?: IntNullableFilter<"Tree"> | number | null
+    status?: EnumTreeStatusFilter<"Tree"> | $Enums.TreeStatus
+    approvedById?: IntNullableFilter<"Tree"> | number | null
+    approvedAt?: DateTimeNullableFilter<"Tree"> | Date | string | null
+    creatorId?: IntNullableFilter<"Tree"> | number | null
   }
 
-  export type TreeCreateManyUserInput = {
+  export type TreeUpsertWithWhereUniqueWithoutApprovedByInput = {
+    where: TreeWhereUniqueInput
+    update: XOR<TreeUpdateWithoutApprovedByInput, TreeUncheckedUpdateWithoutApprovedByInput>
+    create: XOR<TreeCreateWithoutApprovedByInput, TreeUncheckedCreateWithoutApprovedByInput>
+  }
+
+  export type TreeUpdateWithWhereUniqueWithoutApprovedByInput = {
+    where: TreeWhereUniqueInput
+    data: XOR<TreeUpdateWithoutApprovedByInput, TreeUncheckedUpdateWithoutApprovedByInput>
+  }
+
+  export type TreeUpdateManyWithWhereWithoutApprovedByInput = {
+    where: TreeScalarWhereInput
+    data: XOR<TreeUpdateManyMutationInput, TreeUncheckedUpdateManyWithoutApprovedByInput>
+  }
+
+  export type TreeCreateManyCreatorInput = {
     id?: number
     latitude: number
     longitude: number
     species: string
     note?: string | null
     createdAt?: Date | string
+    status?: $Enums.TreeStatus
+    approvedById?: number | null
+    approvedAt?: Date | string | null
   }
 
-  export type TreeUpdateWithoutUserInput = {
+  export type TreeCreateManyApprovedByInput = {
+    id?: number
+    latitude: number
+    longitude: number
+    species: string
+    note?: string | null
+    createdAt?: Date | string
+    status?: $Enums.TreeStatus
+    approvedAt?: Date | string | null
+    creatorId?: number | null
+  }
+
+  export type TreeUpdateWithoutCreatorInput = {
     latitude?: FloatFieldUpdateOperationsInput | number
     longitude?: FloatFieldUpdateOperationsInput | number
     species?: StringFieldUpdateOperationsInput | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumTreeStatusFieldUpdateOperationsInput | $Enums.TreeStatus
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedBy?: UserUpdateOneWithoutApprovedTreesNestedInput
   }
 
-  export type TreeUncheckedUpdateWithoutUserInput = {
+  export type TreeUncheckedUpdateWithoutCreatorInput = {
     id?: IntFieldUpdateOperationsInput | number
     latitude?: FloatFieldUpdateOperationsInput | number
     longitude?: FloatFieldUpdateOperationsInput | number
     species?: StringFieldUpdateOperationsInput | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumTreeStatusFieldUpdateOperationsInput | $Enums.TreeStatus
+    approvedById?: NullableIntFieldUpdateOperationsInput | number | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type TreeUncheckedUpdateManyWithoutUserInput = {
+  export type TreeUncheckedUpdateManyWithoutCreatorInput = {
     id?: IntFieldUpdateOperationsInput | number
     latitude?: FloatFieldUpdateOperationsInput | number
     longitude?: FloatFieldUpdateOperationsInput | number
     species?: StringFieldUpdateOperationsInput | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumTreeStatusFieldUpdateOperationsInput | $Enums.TreeStatus
+    approvedById?: NullableIntFieldUpdateOperationsInput | number | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TreeUpdateWithoutApprovedByInput = {
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    species?: StringFieldUpdateOperationsInput | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumTreeStatusFieldUpdateOperationsInput | $Enums.TreeStatus
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    creator?: UserUpdateOneWithoutCreatedTreesNestedInput
+  }
+
+  export type TreeUncheckedUpdateWithoutApprovedByInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    species?: StringFieldUpdateOperationsInput | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumTreeStatusFieldUpdateOperationsInput | $Enums.TreeStatus
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    creatorId?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type TreeUncheckedUpdateManyWithoutApprovedByInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    latitude?: FloatFieldUpdateOperationsInput | number
+    longitude?: FloatFieldUpdateOperationsInput | number
+    species?: StringFieldUpdateOperationsInput | string
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumTreeStatusFieldUpdateOperationsInput | $Enums.TreeStatus
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    creatorId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
 

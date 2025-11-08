@@ -127,14 +127,18 @@ exports.Prisma.TreeScalarFieldEnum = {
   species: 'species',
   note: 'note',
   createdAt: 'createdAt',
-  userId: 'userId'
+  status: 'status',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  creatorId: 'creatorId'
 };
 
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
   email: 'email',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  role: 'role'
 };
 
 exports.Prisma.MagicLinkTokenScalarFieldEnum = {
@@ -160,7 +164,16 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.TreeStatus = exports.$Enums.TreeStatus = {
+  pending: 'pending',
+  approved: 'approved',
+  rejected: 'rejected'
+};
 
+exports.UserRole = exports.$Enums.UserRole = {
+  user: 'user',
+  admin: 'admin'
+};
 
 exports.Prisma.ModelName = {
   Tree: 'Tree',

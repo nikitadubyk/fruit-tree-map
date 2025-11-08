@@ -49,7 +49,7 @@ export const TreeDetailsDialog = ({
   const deleteTree = useTreeStore((state) => state.deleteTree);
   const currentUser = useUserStore((state) => state.user);
 
-  const isAuthor = tree && currentUser && tree.userId === currentUser.id;
+  const isAuthor = tree && currentUser && tree.creatorId === currentUser.id;
 
   useEffect(() => {
     if (!tree || !open) {
