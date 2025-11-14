@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 
+import { UserRole } from '@/types';
 import { useUserStore } from '@/store';
 import { ROUTES, URL } from '@/config';
 import { saveTokens, saveUser } from '@/utils';
@@ -17,6 +18,7 @@ interface AuthResponse {
     id: number;
     email: string;
     name?: string;
+    role: UserRole;
   };
   tokens: {
     accessToken: string;
@@ -61,7 +63,7 @@ export default function MagicLinkPage() {
     } finally {
       setLoading(false);
     }
-  }, [router, token]);
+  }, [router, token, updateUser]);
 
   useEffect(() => {
     if (!token) {

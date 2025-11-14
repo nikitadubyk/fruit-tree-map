@@ -6,6 +6,14 @@ import { UserRole } from '@/types';
 export async function GET(request: NextRequest) {
   const userId = request.headers.get('x-user-id');
 
+  if (!userId) {
+    const trees = await prisma.tree.findMany({
+      include: { creator: true },
+      where: { status: 'approved' },
+    });
+    return NextResponse.json(trees);
+  }
+
   const user = await prisma.user.findFirst({ where: { id: Number(userId) } });
 
   if (!user) {
@@ -39,6 +47,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    console.log('userId', userId);
+
+    const user = await prisma.user.findFirst({ where: { id: Number(userId) } });
+
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Не найден пользователь' },
+        { status: 400 }
+      );
+    }
+
+    const isAdmin = user.role === UserRole.Admin;
+
     const tree = await prisma.tree.create({
       data: {
         species: species.trim(),
@@ -46,6 +67,7 @@ export async function POST(request: NextRequest) {
         note: note?.trim() || null,
         latitude: parseFloat(latitude),
         longitude: parseFloat(longitude),
+        status: isAdmin ? 'approved' : 'pending',
       },
     });
 
@@ -87,7 +109,18 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Дерево не найдено' }, { status: 404 });
     }
 
-    if (tree.creatorId !== Number(userId)) {
+    const user = await prisma.user.findFirst({ where: { id: Number(userId) } });
+
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Не найден пользователь' },
+        { status: 400 }
+      );
+    }
+
+    const isAdmin = user.role === UserRole.Admin;
+
+    if (!isAdmin || tree.creatorId !== Number(userId)) {
       return NextResponse.json(
         { error: 'Только автор может удалить это дерево' },
         { status: 403 }

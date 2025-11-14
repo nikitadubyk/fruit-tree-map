@@ -1,14 +1,13 @@
 'use client';
 
 import toast from 'react-hot-toast';
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 
-import { api } from '@/api';
-import { URL } from '@/config';
+import { useTrees } from '@/hooks';
 import { Coordinate } from '@/types';
+import { useUserStore } from '@/store';
 import { Tree } from '@/app/generated/prisma';
-import { useTreeStore, useUserStore } from '@/store';
 
 import { Header } from '../header';
 import { AddTreeDialog } from '../add-tree-dialog';
@@ -23,14 +22,14 @@ export const TreeMap = ({
   zoom = 12,
   center = { lat: 48.3071, lng: 38.029633 },
 }: TreeMapProps) => {
-  const { trees, setTrees } = useTreeStore();
-  const [isLoading, setIsLoading] = useState(true);
   const [marker, setMarker] = useState<Coordinate>();
   const [mapCenter, setMapCenter] = useState(center);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [selectedTree, setSelectedTree] = useState<Tree | null>(null);
 
   const isLoggedIn = useUserStore((state) => state.isLoggedIn);
+
+  const { data: trees, isLoading } = useTrees();
 
   const { isLoaded, loadError } = useJsApiLoader({
     language: 'ru',
@@ -47,22 +46,6 @@ export const TreeMap = ({
     }),
     []
   );
-
-  useEffect(() => {
-    const fetchTrees = async () => {
-      try {
-        const { data } = await api.get(URL.GET_TREES);
-        setTrees(data);
-      } catch (error) {
-        console.error('Failed to fetch trees:', error);
-        toast.error('Не удалось загрузить деревья');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchTrees();
-  }, [setTrees]);
 
   useGeolocation({ setMapCenter });
 

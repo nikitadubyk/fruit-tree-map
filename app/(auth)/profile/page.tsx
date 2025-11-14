@@ -8,13 +8,14 @@ import { useForm, FormProvider } from 'react-hook-form';
 
 import { useUserStore } from '@/store';
 import { InputField } from '@/components';
+import { useUpdateProfile } from '@/hooks/useUser';
 
 import { schema, FormValues } from './config';
 
 export default function Profile() {
   const router = useRouter();
   const user = useUserStore((state) => state.user);
-  const updateProfile = useUserStore((state) => state.updateProfile);
+  const { mutate: updateProfile, isPending } = useUpdateProfile();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -25,11 +26,12 @@ export default function Profile() {
 
   const {
     handleSubmit,
-    formState: { isDirty, isSubmitting },
+    formState: { isDirty },
   } = form;
 
-  const onSubmit = (values: FormValues) =>
-    updateProfile({ ...user, ...values });
+  const onSubmit = (values: FormValues) => {
+    updateProfile({ ...values, email: user?.email });
+  };
 
   return (
     <div className="relative min-h-screen flex justify-center items-center p-6 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100">
@@ -62,7 +64,7 @@ export default function Profile() {
                 <Button
                   type="submit"
                   className="px-6"
-                  disabled={!isDirty || isSubmitting}
+                  disabled={!isDirty || isPending}
                 >
                   Сохранить
                 </Button>

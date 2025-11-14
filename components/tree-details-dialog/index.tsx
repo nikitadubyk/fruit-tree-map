@@ -13,9 +13,9 @@ import {
   FileText,
 } from 'lucide-react';
 
-import { api } from '@/api';
-import { URL } from '@/config';
-import { useTreeStore, useUserStore } from '@/store';
+import { UserRole } from '@/types';
+import { useUserStore } from '@/store';
+import { useDeleteTree } from '@/hooks';
 import {
   formatDate,
   handleErrorMessage,
@@ -25,6 +25,7 @@ import {
 import { ConfirmDeleteDialog } from '../confirm-delete-dialog';
 
 import { InfoItem, TreeDetailsDialogProps } from './types';
+import { UpdateStatusButtons } from '../update-status-buttons';
 
 const Info = ({ icon, title, value }: InfoItem) => (
   <div className="p-3 bg-gray-50 rounded-lg">
@@ -43,12 +44,13 @@ export const TreeDetailsDialog = ({
 }: TreeDetailsDialogProps) => {
   const [address, setAddress] = useState('');
   const [loading, setLoading] = useState(false);
-  const [deleting, setDeleting] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const deleteTree = useTreeStore((state) => state.deleteTree);
   const currentUser = useUserStore((state) => state.user);
 
+  const { mutate: deleteTree, isPending: deleting } = useDeleteTree();
+
+  const isAdmin = currentUser?.role === UserRole.Admin;
   const isAuthor = tree && currentUser && tree.creatorId === currentUser.id;
 
   useEffect(() => {
@@ -74,21 +76,19 @@ export const TreeDetailsDialog = ({
     setShowDeleteDialog(true);
   };
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = () => {
     if (!tree) return;
 
-    try {
-      setDeleting(true);
-      await api.delete(URL.DELETE_TREE.replace(':id', String(tree.id)));
-      deleteTree(tree.id);
-      toast.success('Дерево успешно удалено');
-      setShowDeleteDialog(false);
-      onOpenChange(false);
-    } catch (error) {
-      toast.error(handleErrorMessage(error));
-    } finally {
-      setDeleting(false);
-    }
+    deleteTree(tree.id, {
+      onSuccess: () => {
+        toast.success('Дерево успешно удалено');
+        setShowDeleteDialog(false);
+        onOpenChange(false);
+      },
+      onError: (error) => {
+        toast.error(handleErrorMessage(error));
+      },
+    });
   };
 
   if (!tree) return null;
@@ -148,8 +148,15 @@ export const TreeDetailsDialog = ({
             ))}
           </div>
 
+          <div className="w-full mt-4">
+            <UpdateStatusButtons
+              tree={tree}
+              onSuccess={() => onOpenChange(false)}
+            />
+          </div>
+
           <div className="flex justify-between mt-6 pt-4 border-t">
-            {isAuthor && (
+            {(isAuthor || isAdmin) && (
               <Button color="red" variant="soft" onClick={handleDeleteClick}>
                 <Trash2 className="w-4 h-4" />
                 Удалить

@@ -4,7 +4,7 @@ import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import { Tree } from '@/app/generated/prisma';
 
 interface UseMarkerClusterer {
-  trees: Tree[];
+  trees?: Tree[];
   isLoaded: boolean;
   map: google.maps.Map | null;
   setSelectedTree: (tree: Tree) => void;
@@ -20,7 +20,7 @@ export const useMarkerClusterer = ({
   const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
 
   useEffect(() => {
-    if (!map || !isLoaded) return;
+    if (!map || !isLoaded || !trees) return;
 
     markersRef.current.forEach((marker) => {
       marker.map = null;

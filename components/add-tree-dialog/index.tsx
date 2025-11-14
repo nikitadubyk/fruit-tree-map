@@ -7,9 +7,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, FormProvider } from 'react-hook-form';
 import { X, MapPin, Trees, FileText, Loader2 } from 'lucide-react';
 
-import { api } from '@/api';
-import { useTreeStore } from '@/store';
-import { MESSAGES, URL } from '@/config';
+import { MESSAGES } from '@/config';
+import { useCreateTree } from '@/hooks';
 import { handleErrorMessage, getAddressFromCoordinates } from '@/utils';
 
 import { InputField } from '../input-fields';
@@ -23,7 +22,7 @@ export const AddTreeDialog = ({
   onOpenChange,
 }: AddTreeDialogProps) => {
   const [address, setAddress] = useState('');
-  const addTree = useTreeStore((state) => state.addTree);
+  const { mutate: createTree } = useCreateTree();
   const [loadingAddress, setLoadingAddress] = useState(false);
 
   const form = useForm<FormValues>({
@@ -51,23 +50,26 @@ export const AddTreeDialog = ({
     fetchAddress();
   }, [marker, open]);
 
-  const onSubmit = async (values: FormValues) => {
-    try {
-      const { data } = await api.post(URL.GET_TREES, {
-        ...values,
-        latitude: marker?.lat,
-        longitude: marker?.lng,
-      });
+  const onSubmit = (values: FormValues) => {
+    if (!marker) return;
 
-      if (data?.id) {
-        addTree(data);
-        toast.success(`Дерево ${MESSAGES.SUCCESS_ADDED}`);
-        onOpenChange(false);
-        form.reset();
+    createTree(
+      {
+        ...values,
+        latitude: marker.lat,
+        longitude: marker.lng,
+      },
+      {
+        onSuccess: () => {
+          toast.success(`Дерево ${MESSAGES.SUCCESS_ADDED}`);
+          onOpenChange(false);
+          form.reset();
+        },
+        onError: (error) => {
+          toast.error(handleErrorMessage(error));
+        },
       }
-    } catch (error) {
-      toast.error(handleErrorMessage(error));
-    }
+    );
   };
 
   return (
