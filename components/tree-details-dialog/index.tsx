@@ -52,6 +52,7 @@ export const TreeDetailsDialog = ({
   const { mutate: deleteTree, isPending: deleting } = useDeleteTree();
 
   const isAdmin = currentUser?.role === UserRole.Admin;
+  const isShowApprove = isAdmin && tree?.status === 'pending';
   const isAuthor = tree && currentUser && tree.creatorId === currentUser.id;
 
   useEffect(() => {
@@ -149,12 +150,14 @@ export const TreeDetailsDialog = ({
             ))}
           </div>
 
-          <div className="w-full mt-4">
-            <UpdateStatusButtons
-              tree={tree}
-              onSuccess={() => onOpenChange(false)}
-            />
-          </div>
+          {isShowApprove && (
+            <div className="w-full mt-4">
+              <UpdateStatusButtons
+                tree={tree}
+                onSuccess={() => onOpenChange(false)}
+              />
+            </div>
+          )}
 
           {!hideButtons && (
             <div className="flex justify-between mt-6 pt-4 border-t">
