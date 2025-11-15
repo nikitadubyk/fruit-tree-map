@@ -8,6 +8,7 @@ import { Button, TextField, DropdownMenu } from '@radix-ui/themes';
 import { Dispatch, SetStateAction, useRef, useCallback } from 'react';
 
 import { ROUTES } from '@/config';
+import { UserRole } from '@/types';
 import { useUserStore } from '@/store';
 
 interface HeaderProps {
@@ -19,6 +20,8 @@ export const Header = ({ setMapCenter }: HeaderProps) => {
   const user = useUserStore((state) => state.user);
   const logOut = useUserStore((state) => state.logOut);
   const autoCompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+
+  const isAdmin = user?.role === UserRole.Admin;
 
   const onLoadAutocomplete = useCallback(
     (autocomplete: google.maps.places.Autocomplete) => {
@@ -64,6 +67,11 @@ export const Header = ({ setMapCenter }: HeaderProps) => {
               <DropdownMenu.Item asChild>
                 <Link href={ROUTES.PROFILE.HOME}>Профиль</Link>
               </DropdownMenu.Item>
+              {isAdmin && (
+                <DropdownMenu.Item asChild>
+                  <Link href={ROUTES.APPROVE.HOME}>Деревья на проверке</Link>
+                </DropdownMenu.Item>
+              )}
               <DropdownMenu.Separator />
               <DropdownMenu.Item onClick={logOut} color="red">
                 Выйти

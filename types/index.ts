@@ -1,3 +1,5 @@
+import { Tree } from '@/app/generated/prisma';
+
 export enum UserRole {
   User = 'user',
   Admin = 'admin',
@@ -20,3 +22,7 @@ export enum TreeStatus {
   Approved = 'approved',
   Rejected = 'rejected',
 }
+
+export type TreeWithCreator = Tree & {
+  creator: User | null;
+};

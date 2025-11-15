@@ -7,9 +7,12 @@ import { useUpdateTreeStatus } from '@/hooks';
 
 import { UpdateStatusButtonsProps } from './types';
 import { UserRole } from '@/types';
+import { CheckCircle } from 'lucide-react';
+import { CrossCircledIcon } from '@radix-ui/react-icons';
 
 export const UpdateStatusButtons = ({
   tree,
+  isMinify,
   onSuccess,
 }: UpdateStatusButtonsProps) => {
   const user = useUserStore((store) => store.user);
@@ -32,7 +35,6 @@ export const UpdateStatusButtons = ({
     );
   };
 
-  console.log('tree', tree);
   if (!isAdmin && tree.status !== 'pending') {
     return null;
   }
@@ -40,20 +42,20 @@ export const UpdateStatusButtons = ({
   return (
     <div className="flex gap-2 w-full">
       <Button
-        size="3"
         color="green"
         disabled={isPending}
+        size={isMinify ? '2' : '3'}
         onClick={() => handleStatusChange('approved')}
       >
-        Подтвердить
+        {isMinify ? <CheckCircle /> : 'Подтвердить'}
       </Button>
       <Button
-        size="3"
         color="red"
         disabled={isPending}
+        size={isMinify ? '2' : '3'}
         onClick={() => handleStatusChange('rejected')}
       >
-        Отклонить
+        {isMinify ? <CrossCircledIcon width={24} height={24} /> : 'Отклонить'}
       </Button>
     </div>
   );

@@ -5,6 +5,11 @@ import { UserRole } from '@/types';
 
 export async function GET(request: NextRequest) {
   const userId = request.headers.get('x-user-id');
+  const { searchParams } = new URL(request.url);
+  const statusParam = searchParams.get('status') as
+    | 'pending'
+    | 'approved'
+    | null;
 
   if (!userId) {
     const trees = await prisma.tree.findMany({
@@ -24,6 +29,14 @@ export async function GET(request: NextRequest) {
   }
 
   const isAdmin = user.role === UserRole.Admin;
+
+  if (statusParam && isAdmin) {
+    const trees = await prisma.tree.findMany({
+      include: { creator: true },
+      where: { status: statusParam },
+    });
+    return NextResponse.json(trees);
+  }
 
   const trees = await prisma.tree.findMany({
     include: { creator: true },
@@ -46,8 +59,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
-    console.log('userId', userId);
 
     const user = await prisma.user.findFirst({ where: { id: Number(userId) } });
 

@@ -40,6 +40,7 @@ const Info = ({ icon, title, value }: InfoItem) => (
 export const TreeDetailsDialog = ({
   tree,
   open,
+  hideButtons,
   onOpenChange,
 }: TreeDetailsDialogProps) => {
   const [address, setAddress] = useState('');
@@ -132,7 +133,7 @@ export const TreeDetailsDialog = ({
   return (
     <>
       <Dialog.Root open={open} onOpenChange={onOpenChange}>
-        <Dialog.Content style={{ maxWidth: 450 }}>
+        <Dialog.Content>
           <Dialog.Title className="mb-5 text-xl font-semibold">
             Информация о дереве
           </Dialog.Title>
@@ -155,20 +156,22 @@ export const TreeDetailsDialog = ({
             />
           </div>
 
-          <div className="flex justify-between mt-6 pt-4 border-t">
-            {(isAuthor || isAdmin) && (
-              <Button color="red" variant="soft" onClick={handleDeleteClick}>
-                <Trash2 className="w-4 h-4" />
-                Удалить
-              </Button>
-            )}
+          {!hideButtons && (
+            <div className="flex justify-between mt-6 pt-4 border-t">
+              {(isAuthor || isAdmin) && (
+                <Button color="red" variant="soft" onClick={handleDeleteClick}>
+                  <Trash2 className="w-4 h-4" />
+                  Удалить
+                </Button>
+              )}
 
-            <Dialog.Close className={!isAuthor ? 'ml-auto' : ''}>
-              <Button variant="soft" color="gray">
-                Закрыть
-              </Button>
-            </Dialog.Close>
-          </div>
+              <Dialog.Close className={!isAuthor ? 'ml-auto' : ''}>
+                <Button variant="soft" color="gray">
+                  Закрыть
+                </Button>
+              </Dialog.Close>
+            </div>
+          )}
         </Dialog.Content>
       </Dialog.Root>
 

@@ -3,6 +3,8 @@ import type { Metadata } from 'next';
 import { PropsWithChildren } from 'react';
 import { Geist, Geist_Mono } from 'next/font/google';
 
+import { defaultMetadata } from '@/config';
+
 import './globals.css';
 import { Providers } from './providers';
 import { AuthLayout } from './auth-layout';
@@ -17,10 +19,7 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
-export const metadata: Metadata = {
-  title: 'Карта фруктовых деревьев',
-  description: 'Карта фруктовых деревьев',
-};
+export const metadata: Metadata = defaultMetadata;
 
 export default function RootLayout({ children }: Readonly<PropsWithChildren>) {
   return (

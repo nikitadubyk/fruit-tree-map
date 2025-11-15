@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { Tree } from '@/app/generated/prisma';
+import { TreeWithCreator } from '@/types';
 import {
   treesApi,
   CreateTreeData,
@@ -9,10 +9,10 @@ import {
 
 export const TREES_QUERY_KEY = ['trees'] as const;
 
-export const useTrees = () =>
-  useQuery<Tree[]>({
-    queryKey: TREES_QUERY_KEY,
-    queryFn: treesApi.getTrees,
+export const useTrees = (status?: 'pending' | 'approved') =>
+  useQuery<TreeWithCreator[]>({
+    queryKey: [...TREES_QUERY_KEY, status],
+    queryFn: () => treesApi.getTrees(status),
   });
 
 export const useCreateTree = () => {

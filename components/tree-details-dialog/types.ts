@@ -5,6 +5,7 @@ import { Tree } from '@/app/generated/prisma';
 export interface TreeDetailsDialogProps {
   open: boolean;
   tree: Tree | null;
+  hideButtons?: boolean;
   onOpenChange: (open: boolean) => void;
 }
 

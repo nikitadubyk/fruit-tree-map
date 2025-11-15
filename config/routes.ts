@@ -7,8 +7,13 @@ const PROFILE = {
   HOME: '/profile',
 };
 
+const APPROVE = {
+  HOME: '/approve',
+};
+
 export const ROUTES = {
   AUTH,
   PROFILE,
+  APPROVE,
   HOME: '/',
 };

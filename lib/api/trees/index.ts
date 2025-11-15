@@ -1,14 +1,20 @@
 import { api } from '@/api';
 import { URL } from '@/config';
+import { addParamsToUrl } from '@/utils';
+import { TreeWithCreator } from '@/types';
 import { Tree } from '@/app/generated/prisma';
 
 import { CreateTreeData, UpdateTreeStatusData } from './types';
 export * from './types';
 
 export const treesApi = {
-  getTrees: async (): Promise<Tree[]> => {
-    const { data } = await api.get(URL.GET_TREES);
-    return data;
+  getTrees: async (
+    status?: 'pending' | 'approved'
+  ): Promise<TreeWithCreator[]> => {
+    const response = await api.get<TreeWithCreator[]>(
+      addParamsToUrl(URL.GET_TREES, { status })
+    );
+    return response.data;
   },
 
   createTree: async (treeData: CreateTreeData): Promise<Tree> => {

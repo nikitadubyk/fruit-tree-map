@@ -16,7 +16,7 @@ import { TreeDetailsDialog } from '../tree-details-dialog';
 import { MapError } from './error';
 import { MapLoader } from './loader';
 import { TreeMapProps } from './types';
-import { useGeolocation, useMarkerClusterer } from './hooks';
+import { useGeolocation, useMarkerClusterer, useTargetTree } from './hooks';
 
 export const TreeMap = ({
   zoom = 12,
@@ -46,6 +46,8 @@ export const TreeMap = ({
     }),
     []
   );
+
+  useTargetTree({ map, isLoaded, setMapCenter, setSelectedTree });
 
   useGeolocation({ setMapCenter });
 
