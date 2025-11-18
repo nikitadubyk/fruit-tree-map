@@ -3,9 +3,9 @@
 import axios from 'axios';
 import Link from 'next/link';
 import { Button } from '@radix-ui/themes';
-import { useCallback, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 
 import { UserRole } from '@/types';
 import { useUserStore } from '@/store';
@@ -26,7 +26,7 @@ interface AuthResponse {
   };
 }
 
-export default function MagicLinkPage() {
+const MagicLinkContent = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const updateUser = useUserStore((state) => state.updateUser);
@@ -93,8 +93,8 @@ export default function MagicLinkPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col gap-4 items-center">
           <ExclamationTriangleIcon className="text-red-600 w-10 h-10" />
-          <h2 className="text-xl font-semibold text-gray-900 ">Ошибка входа</h2>
-          <p className="text-gray-600 ">{error}</p>
+          <h2 className="text-xl font-semibold text-gray-900">Ошибка входа</h2>
+          <p className="text-gray-600">{error}</p>
 
           <Button asChild color="blue" size="3">
             <Link href={ROUTES.HOME}>Вернуться на главную</Link>
@@ -110,5 +110,22 @@ export default function MagicLinkPage() {
         <p className="text-gray-600">Проверяем ссылку...</p>
       </div>
     </div>
+  );
+};
+
+const MagicLinkLoading = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+      <p className="text-gray-600">Загрузка...</p>
+    </div>
+  </div>
+);
+
+export default function MagicLinkPage() {
+  return (
+    <Suspense fallback={<MagicLinkLoading />}>
+      <MagicLinkContent />
+    </Suspense>
   );
 }

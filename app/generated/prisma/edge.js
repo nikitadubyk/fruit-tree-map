@@ -191,17 +191,18 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": "prisma+postgres://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlfa2V5IjoiOTM3MGYzMWYtMmI4ZC00YjFmLTg3OGUtNmM5NDJkYTVlN2JhIiwidGVuYW50X2lkIjoiZTgyODdjZTc2YWRhYzQxNDE0MDFlNDllMjNhZTg2ZTA3YTgxMjhjYTFkMzVlOGMyZDY2ZTRiMTA0MmQzYjM1MCIsImludGVybmFsX3NlY3JldCI6IjE5ZWE0OWQxLTcxYzUtNDcxNS04ZDE1LTU2MjM3ZmYyZjQ0MyJ9.qm0KAUwMIO7KnZIrqfNMpBQHAOv6j95_VmRlNKuvcfI"
+        "value": null
       }
     }
   },
   "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../app/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum TreeStatus {\n  pending\n  approved\n  rejected\n}\n\nenum UserRole {\n  user\n  admin\n}\n\nmodel Tree {\n  id        Int        @id @default(autoincrement())\n  latitude  Float\n  longitude Float\n  species   String\n  note      String?\n  createdAt DateTime   @default(now())\n  status    TreeStatus @default(pending)\n\n  approvedBy   User?     @relation(\"ApprovedTrees\", fields: [approvedById], references: [id])\n  approvedById Int?\n  approvedAt   DateTime?\n\n  creator   User? @relation(\"CreatedTrees\", fields: [creatorId], references: [id])\n  creatorId Int?\n}\n\nmodel User {\n  id        Int      @id @default(autoincrement())\n  name      String?\n  email     String?  @unique\n  createdAt DateTime @default(now())\n  role      UserRole @default(user)\n\n  createdTrees  Tree[] @relation(\"CreatedTrees\")\n  approvedTrees Tree[] @relation(\"ApprovedTrees\")\n}\n\nmodel MagicLinkToken {\n  id        Int      @id @default(autoincrement())\n  token     String   @unique\n  email     String\n  createdAt DateTime @default(now())\n  expiresAt DateTime\n  used      Boolean  @default(false)\n}\n",
   "inlineSchemaHash": "f437c4fee5a13d01f07c86157b99d327032b1ded7f0fc7d65391c8776e2e2122",
-  "copyEngine": false
+  "copyEngine": true
 }
 config.dirname = '/'
 
