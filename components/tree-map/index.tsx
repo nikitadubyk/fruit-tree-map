@@ -1,6 +1,7 @@
 'use client';
 
 import toast from 'react-hot-toast';
+import Div100vh from 'react-div-100vh';
 import { useState, useMemo, useCallback } from 'react';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 
@@ -79,7 +80,7 @@ export const TreeMap = ({
 
   return (
     <>
-      <div className="relative w-full h-screen">
+      <Div100vh className="relative w-full">
         <Header setMapCenter={setMapCenter} />
 
         <GoogleMap
@@ -91,7 +92,7 @@ export const TreeMap = ({
           onUnmount={onUnmount}
           mapContainerClassName="w-full h-full"
         />
-      </div>
+      </Div100vh>
 
       <AddTreeDialog
         marker={marker}
