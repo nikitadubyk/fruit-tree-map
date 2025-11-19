@@ -36,10 +36,8 @@ export async function POST(req: Request) {
     to: email,
     html: emailHtml,
     subject: 'Вход в приложение',
-    from: 'onboarding@resend.dev',
+    from: 'no-reply@fruit-tree-map.ru',
   });
-
-  console.log('response', response);
 
   return NextResponse.json(response);
 }
