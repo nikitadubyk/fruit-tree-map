@@ -1,3 +1,5 @@
+<img width="3168" height="1344" alt="fruit-tree-map-intro" src="https://github.com/user-attachments/assets/019c9b69-112d-4e06-afe6-456117c07b34" />
+
 ### 🍎 Fruit Tree Map
 
 **Fruit Tree Map** — интерактивное приложение, позволяющее отмечать на карте фруктовые деревья, делиться находками и находить сезонные плоды вокруг себя.  
