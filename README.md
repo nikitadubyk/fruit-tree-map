@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+### 🍎 Fruit Tree Map
 
-## Getting Started
+**Fruit Tree Map** — интерактивное приложение, позволяющее отмечать на карте фруктовые деревья, делиться находками и находить сезонные плоды вокруг себя.  
+Проект создан для тех, кто хочет открыть свой город с новой стороны.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Ключевые возможности
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### 🗺 Картография и Навигация
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Добавление точек:** Любой авторизованный пользователь может отметить дерево на карте, указав его тип и координаты.
+- **Интерактивность:** Удобный просмотр карты, кластеризация точек и поиск по геолокации.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+#### 🤝 Социальное взаимодействие
 
-## Learn More
+- **Карточки объектов:** Просмотр подробной информации о дереве (фото, описание, сезонность) и профиля автора, добавившего точку.
+- **Личный профиль:** Возможность редактировать свои данные и отслеживать вклад в развитие карты.
 
-To learn more about Next.js, take a look at the following resources:
+#### 🛡 Система модерации и безопасности
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Верификация данных:** Чтобы карта оставалась чистой, новые точки проходят премодерацию.
+- **Админ-панель:** Специальный интерфейс для администраторов с возможностью **подтверждать (Approve)** или **отклонять (Reject)** заявки на добавление деревьев.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🛠 Технический стек
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Фреймворк:** [Next.js](https://nextjs.org) (App Router)
+- **Язык:** TypeScript, JavaScript
+- **Стили:** Tailwind CSS, Radix UI
+- **Карты:** Google Maps
+- **Auth & DB:** Авторизация по Magic Link, Postgresql, Prisma
+- **Отправка Email:** React Resend
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🚀 Запуск проекта
+
+Чтобы запустить проект локально, выполните следующие команды:
+
+1. **Клонируйте репозиторий**
+2. **Установите зависимости:** `npm i`
+3. **Запустите проект:** `npm run dev`
+
+---
+
+## 🤝 Как помочь проекту
+
+Мы рады любым идеям! Если у вас есть предложения по улучшению интерфейса или функционала:
+
+1. Создайте Issue с описанием идеи.
+2. Или сделайте Fork репозитория и создайте Pull Request.

@@ -38,6 +38,7 @@ export async function GET(req: Request) {
   }
 
   const payload = {
+    role: user.role,
     userId: user.id,
     email: user.email,
   };
@@ -54,8 +55,9 @@ export async function GET(req: Request) {
     success: true,
     user: {
       id: user.id,
-      email: user.email,
       name: user.name,
+      role: user.role,
+      email: user.email,
     },
     tokens: {
       accessToken,
