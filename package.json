@@ -30,7 +30,7 @@
     "jose": "^6.0.13",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.522.0",
-    "next": "16.0.3",
+    "next": "16.0.10",
     "react": "^19.0.0-rc.1",
     "react-div-100vh": "^0.7.0",
     "react-dom": "^19.0.0-rc.1",

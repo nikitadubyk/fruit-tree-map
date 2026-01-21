@@ -164,7 +164,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "D:\\pet-projects\\fruit-tree-map\\app\\generated\\prisma",
+      "value": "/vercel/sandbox/primary/app/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -173,17 +173,16 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "windows",
+        "value": "rhel-openssl-3.0.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "D:\\pet-projects\\fruit-tree-map\\prisma\\schema.prisma",
+    "sourceFilePath": "/vercel/sandbox/primary/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
-    "schemaEnvPath": "../../../.env"
+    "rootEnvPath": null
   },
   "relativePath": "../../../prisma",
   "clientVersion": "6.7.0",
@@ -203,7 +202,7 @@ const config = {
   },
   "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../app/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum TreeStatus {\n  pending\n  approved\n  rejected\n}\n\nenum UserRole {\n  user\n  admin\n}\n\nmodel Tree {\n  id        Int        @id @default(autoincrement())\n  latitude  Float\n  longitude Float\n  species   String\n  note      String?\n  createdAt DateTime   @default(now())\n  status    TreeStatus @default(pending)\n\n  approvedBy   User?     @relation(\"ApprovedTrees\", fields: [approvedById], references: [id])\n  approvedById Int?\n  approvedAt   DateTime?\n\n  creator   User? @relation(\"CreatedTrees\", fields: [creatorId], references: [id])\n  creatorId Int?\n}\n\nmodel User {\n  id        Int      @id @default(autoincrement())\n  name      String?\n  email     String?  @unique\n  createdAt DateTime @default(now())\n  role      UserRole @default(user)\n\n  createdTrees  Tree[] @relation(\"CreatedTrees\")\n  approvedTrees Tree[] @relation(\"ApprovedTrees\")\n}\n\nmodel MagicLinkToken {\n  id        Int      @id @default(autoincrement())\n  token     String   @unique\n  email     String\n  createdAt DateTime @default(now())\n  expiresAt DateTime\n  used      Boolean  @default(false)\n}\n",
   "inlineSchemaHash": "f437c4fee5a13d01f07c86157b99d327032b1ded7f0fc7d65391c8776e2e2122",
-  "copyEngine": true
+  "copyEngine": false
 }
 
 const fs = require('fs')
@@ -240,9 +239,3 @@ const PrismaClient = getPrismaClient(config)
 exports.PrismaClient = PrismaClient
 Object.assign(exports, Prisma)
 
-// file annotations for bundling tools to include these files
-path.join(__dirname, "query_engine-windows.dll.node");
-path.join(process.cwd(), "app/generated/prisma/query_engine-windows.dll.node")
-// file annotations for bundling tools to include these files
-path.join(__dirname, "schema.prisma");
-path.join(process.cwd(), "app/generated/prisma/schema.prisma")
