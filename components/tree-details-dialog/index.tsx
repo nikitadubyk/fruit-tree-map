@@ -49,7 +49,7 @@ export const TreeDetailsDialog = ({
 
   const currentUser = useUserStore((state) => state.user);
 
-  const { mutate: deleteTree, isPending: deleting } = useDeleteTree();
+  const { mutateAsync: deleteTree, isPending: deleting } = useDeleteTree();
 
   const isAdmin = currentUser?.role === UserRole.Admin;
   const isShowApprove = isAdmin && tree?.status === 'pending';
@@ -78,19 +78,17 @@ export const TreeDetailsDialog = ({
     setShowDeleteDialog(true);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (!tree) return;
 
-    deleteTree(tree.id, {
-      onSuccess: () => {
-        toast.success('Дерево успешно удалено');
-        setShowDeleteDialog(false);
-        onOpenChange(false);
-      },
-      onError: (error) => {
-        toast.error(handleErrorMessage(error));
-      },
-    });
+    try {
+      await deleteTree(tree.id);
+      toast.success('Дерево успешно удалено');
+      setShowDeleteDialog(false);
+      onOpenChange(false);
+    } catch (error) {
+      toast.error(handleErrorMessage(error));
+    }
   };
 
   if (!tree) return null;

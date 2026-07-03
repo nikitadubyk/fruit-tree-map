@@ -22,7 +22,7 @@ export const AddTreeDialog = ({
   onOpenChange,
 }: AddTreeDialogProps) => {
   const [address, setAddress] = useState('');
-  const { mutate: createTree } = useCreateTree();
+  const { mutateAsync: createTree } = useCreateTree();
   const [loadingAddress, setLoadingAddress] = useState(false);
 
   const form = useForm<FormValues>({
@@ -50,26 +50,22 @@ export const AddTreeDialog = ({
     fetchAddress();
   }, [marker, open]);
 
-  const onSubmit = (values: FormValues) => {
+  const onSubmit = async (values: FormValues) => {
     if (!marker) return;
 
-    createTree(
-      {
+    try {
+      await createTree({
         ...values,
         latitude: marker.lat,
         longitude: marker.lng,
-      },
-      {
-        onSuccess: () => {
-          toast.success(`Дерево ${MESSAGES.SUCCESS_ADDED}`);
-          onOpenChange(false);
-          form.reset();
-        },
-        onError: (error) => {
-          toast.error(handleErrorMessage(error));
-        },
-      }
-    );
+      });
+
+      toast.success(`Дерево ${MESSAGES.SUCCESS_ADDED}`);
+      onOpenChange(false);
+      form.reset();
+    } catch (error) {
+      toast.error(handleErrorMessage(error));
+    }
   };
 
   return (
@@ -156,8 +152,8 @@ export const AddTreeDialog = ({
 
               <Button
                 type="submit"
-                disabled={!isDirty || isSubmitting}
                 color="green"
+                disabled={!isDirty || isSubmitting}
               >
                 {isSubmitting ? (
                   <div className="flex gap-2">

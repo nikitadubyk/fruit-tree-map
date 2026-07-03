@@ -17,12 +17,18 @@ import { TreeDetailsDialog } from '../tree-details-dialog';
 import { MapError } from './error';
 import { MapLoader } from './loader';
 import { TreeMapProps } from './types';
-import { useGeolocation, useMarkerClusterer, useTargetTree } from './hooks';
+import {
+  useTargetTree,
+  useGeolocation,
+  useMarkerClusterer,
+  useCenterSearchResult,
+} from './hooks';
 
 export const TreeMap = ({
   zoom = 12,
   center = { lat: 48.3071, lng: 38.029633 },
 }: TreeMapProps) => {
+  const [search, setSearch] = useState('');
   const [marker, setMarker] = useState<Coordinate>();
   const [mapCenter, setMapCenter] = useState(center);
   const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -39,6 +45,15 @@ export const TreeMap = ({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!,
   });
 
+  const filteredTrees = useMemo(() => {
+    if (!trees) return [];
+
+    const query = search.trim().toLowerCase();
+    if (!query) return trees;
+
+    return trees.filter((tree) => tree.species.toLowerCase().includes(query));
+  }, [trees, search]);
+
   const options = useMemo<google.maps.MapOptions>(
     () => ({
       zoomControl: true,
@@ -52,7 +67,9 @@ export const TreeMap = ({
 
   useGeolocation({ setMapCenter });
 
-  useMarkerClusterer({ map, trees, isLoaded, setSelectedTree });
+  useMarkerClusterer({ map, trees: filteredTrees, isLoaded, setSelectedTree });
+
+  useCenterSearchResult({ map, search, setMapCenter, filteredTrees });
 
   const onMapClick = (e: google.maps.MapMouseEvent) => {
     if (!isLoggedIn || !e.latLng) {
@@ -81,7 +98,11 @@ export const TreeMap = ({
   return (
     <>
       <Div100vh className="relative w-full">
-        <Header setMapCenter={setMapCenter} />
+        <Header
+          search={search}
+          setSearch={setSearch}
+          setMapCenter={setMapCenter}
+        />
 
         <GoogleMap
           zoom={zoom}

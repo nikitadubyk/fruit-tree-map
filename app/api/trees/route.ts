@@ -6,15 +6,20 @@ import { UserRole } from '@/types';
 export async function GET(request: NextRequest) {
   const userId = request.headers.get('x-user-id');
   const { searchParams } = new URL(request.url);
+  const searchParam = searchParams.get('search')?.trim();
   const statusParam = searchParams.get('status') as
     | 'pending'
     | 'approved'
     | null;
 
+  const speciesFilter = searchParam
+    ? { species: { contains: searchParam, mode: 'insensitive' as const } }
+    : {};
+
   if (!userId) {
     const trees = await prisma.tree.findMany({
       include: { creator: true },
-      where: { status: 'approved' },
+      where: { ...speciesFilter, status: 'approved' },
     });
     return NextResponse.json(trees);
   }
@@ -33,14 +38,17 @@ export async function GET(request: NextRequest) {
   if (statusParam && isAdmin) {
     const trees = await prisma.tree.findMany({
       include: { creator: true },
-      where: { status: statusParam },
+      where: { ...speciesFilter, status: statusParam },
     });
     return NextResponse.json(trees);
   }
 
   const trees = await prisma.tree.findMany({
     include: { creator: true },
-    where: { status: isAdmin ? { in: ['approved', 'pending'] } : 'approved' },
+    where: {
+      ...speciesFilter,
+      status: isAdmin ? { in: ['approved', 'pending'] } : 'approved',
+    },
   });
 
   return NextResponse.json(trees);
